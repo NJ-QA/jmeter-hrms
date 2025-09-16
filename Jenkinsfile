@@ -5,7 +5,7 @@ pipeline {
         GIT_CREDENTIALS = '5fb4bd9e-aada-4473-a6b0-8697d93c1869'
         REPO_URL = 'https://github.com/NJ-QA/jmeter-hrms.git'
         BRANCH_NAME = 'main'
-        JMETER_HOME = "C:\apache-jmeter-5.6.3"
+        JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-5.6.3"
         JMETER_ZIP_URL = 'https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip'
         TEST_PLAN = 'HRMS_MB.jmx' // Your JMX file name
         REPORT_DIR = 'reports\\latest'
@@ -104,3 +104,4 @@ pipeline {
         }
     }
 }
+
