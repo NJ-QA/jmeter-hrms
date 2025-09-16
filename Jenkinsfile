@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        // Git credentials ID
         GIT_CREDENTIALS = '5fb4bd9e-aada-4473-a6b0-8697d93c1869'
         REPO_URL = 'https://github.com/NJ-QA/jmeter-hrms.git'
         BRANCH_NAME = 'main'
-        JMETER_HOME = 'C:\\apache-jmeter-5.6.3' // Update if needed
-        TEST_PLAN = 'HRMS_MB.jmx' // Update with your JMX file name
+        JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-5.6.3"
+        JMETER_ZIP_URL = 'https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip'
+        TEST_PLAN = 'HRMS_MB.jmx' // Update with your JMX file
     }
 
     stages {
@@ -23,10 +23,17 @@ pipeline {
         stage('Setup JMeter') {
             steps {
                 script {
-                    if (!fileExists("${env.JMETER_HOME}\\bin\\jmeter.bat")) {
-                        error "JMeter not found at ${env.JMETER_HOME}. Please install JMeter."
+                    if (!fileExists("${JMETER_HOME}\\bin\\jmeter.bat")) {
+                        echo "JMeter not found. Downloading..."
+                        powershell """
+                            Invoke-WebRequest -Uri '${JMETER_ZIP_URL}' -OutFile '${env.WORKSPACE}\\jmeter.zip'
+                        """
+                        powershell """
+                            Expand-Archive -Path '${env.WORKSPACE}\\jmeter.zip' -DestinationPath '${env.WORKSPACE}' -Force
+                        """
+                        echo "JMeter downloaded and extracted to ${JMETER_HOME}"
                     } else {
-                        echo "JMeter found at ${env.JMETER_HOME}"
+                        echo "JMeter already exists at ${JMETER_HOME}"
                     }
                 }
             }
@@ -35,7 +42,7 @@ pipeline {
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan..."
-                bat "\"${env.JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${env.TEST_PLAN} -l reports/latest/results.jtl -e -o reports/latest"
+                bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${TEST_PLAN} -l reports/latest/results.jtl -e -o reports/latest"
             }
         }
 
