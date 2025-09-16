@@ -1,0 +1,4 @@
+firstName,middleName,lastName,emailPrefix,countryCode,phoneNumber,dateOfBirth,password,confirmPassword,industryType
+Amit,Kumar,Verma,testuser,+91,9876543210,2002-11-19,Password@123,Password@123,TECHNOLOGY
+Sita,Rani,Mehra,testuser,+91,9876543222,2000-10-05,Password@123,Password@123,HEALTHCARE
+Rohit,,Sharma,testuser,+91,9876543233,2003-05-18,Password@123,Password@123,EDUCATION
