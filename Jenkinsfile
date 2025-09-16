@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Git credentials ID
         GIT_CREDENTIALS = '5fb4bd9e-aada-4473-a6b0-8697d93c1869'
-        REPO_URL = 'https://github.com/username/jmeter-project.git'
+        REPO_URL = 'https://github.com/NJ-QA/jmeter-hrms.git'
         JMETER_HOME = 'C:\\apache-jmeter-5.6.3' // Adjust path as needed
         TEST_PLAN = 'HRMS_MB.jmx' // Your JMeter test plan
     }
@@ -71,3 +71,4 @@ pipeline {
         }
     }
 }
+
