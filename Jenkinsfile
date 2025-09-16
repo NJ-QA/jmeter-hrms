@@ -7,7 +7,8 @@ pipeline {
         BRANCH_NAME = 'main'
         JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-5.6.3"
         JMETER_ZIP_URL = 'https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip'
-        TEST_PLAN = 'HRMS_MB.jmx' // Update with your JMX file
+        TEST_PLAN = 'HRMS_MB.jmx' // Your JMX file
+        REPORT_DIR = 'reports\\latest'
     }
 
     stages {
@@ -39,17 +40,24 @@ pipeline {
             }
         }
 
+        stage('Prepare Reports Folder') {
+            steps {
+                echo "Creating reports folder if it doesn't exist..."
+                bat "mkdir ${REPORT_DIR}"
+            }
+        }
+
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan..."
-                bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${TEST_PLAN} -l reports/latest/results.jtl -e -o reports/latest"
+                bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${TEST_PLAN} -l ${REPORT_DIR}\\results.jtl -e -o ${REPORT_DIR}"
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: 'reports/latest',
+                    reportDir: REPORT_DIR,
                     reportFiles: 'index.html',
                     reportName: 'JMeterTestReport',
                     keepAll: true,
