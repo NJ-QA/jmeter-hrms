@@ -7,7 +7,7 @@ pipeline {
         BRANCH_NAME = 'main'
         JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-5.6.3"
         JMETER_ZIP_URL = 'https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip'
-        TEST_PLAN = 'HRMS_MB.jmx' // Your JMX file
+        TEST_PLAN = 'HRMS_MB.jmx' // Update with your JMX file
         REPORT_DIR = 'reports\\latest'
     }
 
@@ -42,8 +42,11 @@ pipeline {
 
         stage('Prepare Reports Folder') {
             steps {
-                echo "Creating reports folder if it doesn't exist..."
-                bat "mkdir ${REPORT_DIR}"
+                echo "Creating reports folder..."
+                // Ensure parent 'reports' exists
+                bat "mkdir reports || echo Folder exists"
+                // Ensure 'latest' exists
+                bat "mkdir ${REPORT_DIR} || echo Folder exists"
             }
         }
 
@@ -56,14 +59,21 @@ pipeline {
 
         stage('Publish JMeter HTML Report') {
             steps {
-                publishHTML(target: [
-                    reportDir: REPORT_DIR,
-                    reportFiles: 'index.html',
-                    reportName: 'JMeterTestReport',
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true,
-                    allowMissing: false
-                ])
+                script {
+                    if (fileExists("${REPORT_DIR}\\index.html")) {
+                        echo "Publishing JMeter HTML report..."
+                        publishHTML(target: [
+                            reportDir: REPORT_DIR,
+                            reportFiles: 'index.html',
+                            reportName: 'JMeterTestReport',
+                            keepAll: true,
+                            alwaysLinkToLastBuild: true,
+                            allowMissing: false
+                        ])
+                    } else {
+                        error "JMeter HTML report not found! Check JMeter execution logs."
+                    }
+                }
             }
         }
 
