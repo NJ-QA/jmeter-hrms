@@ -11,6 +11,14 @@ pipeline {
         REPORT_DIR = 'reports\\latest'
     }
 
+      parameters {
+        choice(
+            name: 'DOMAIN',
+            choices: ['hrms.modulobytes.com', 'qa.myserver.com', 'uat.myserver.com', 'prod.myserver.com'],
+            description: 'Select target environment domain'
+        )
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -50,8 +58,8 @@ pipeline {
 
         stage('Run JMeter Test') {
             steps {
-                echo "Running JMeter Test Plan..."
-                bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${TEST_PLAN} -l ${REPORT_DIR}\\results.jtl -e -o ${REPORT_DIR}"
+                echo "Running JMeter Test Plan against ${params.DOMAIN}..."
+                bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t ${TEST_PLAN} -l ${REPORT_DIR}\\results.jtl -e -o ${REPORT_DIR} -Jdomain=${params.DOMAIN}"
             }
         }
 
@@ -104,4 +112,5 @@ pipeline {
         }
     }
 }
+
 
