@@ -1,6 +1,6 @@
 ﻿pipeline {
     agent any
-
+     
     stages {
         stage('Run JMeter Test') {
             steps {
@@ -11,6 +11,8 @@
 
         stage('Publish JMeter HTML Report') {
             steps {
+                script {
+                    if(fileExists('reports/latest/index.html')){
                 publishHTML(target: [
                     reportDir: 'reports/latest',
                     reportFiles: 'index.html',
@@ -19,12 +21,15 @@
                     alwaysLinkToLastBuild: true,
                     allowMissing: false
                 ])
+            } else{
+                        echo "JMeter HTML report not found!"
+                    }
+        }
             }
         }
-
         stage('Archive CSV + Images') {
             steps {
-                archiveArtifacts artifacts: 'csv/**, images/**', fingerprint: true
+                archiveArtifacts artifacts: 'csvs/**, images/**', fingerprint: true, llowEmptyArchive: true
             }
         }
     }
@@ -36,4 +41,5 @@
         }
     }
 }
+
 
