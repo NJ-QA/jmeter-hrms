@@ -1,28 +1,626 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
-<hashTree>
-  <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="HRMS TestPlan" enabled="true">
-    <elementProp name="TestPlan.user_defined_variables" elementType="Arguments">
-      <collectionProp name="Arguments.arguments"/>
-    </elementProp>
-  </TestPlan>
   <hashTree>
-    <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-      <stringProp name="ThreadGroup.num_threads">1</stringProp>
-      <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-      <longProp name="ThreadGroup.start_time">1695030000000</longProp>
-      <longProp name="ThreadGroup.end_time">1695033600000</longProp>
-      <boolProp name="ThreadGroup.scheduler">false</boolProp>
-    </ThreadGroup>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="HRMS MB APIs">
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+    </TestPlan>
     <hashTree>
-      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Request" enabled="true">
-        <stringProp name="HTTPSampler.domain">${__P(domain,hrms.modulobytes.com)}</stringProp>
-        <stringProp name="HTTPSampler.protocol">https</stringProp>
-        <stringProp name="HTTPSampler.path">/api/login</stringProp>
-        <stringProp name="HTTPSampler.method">POST</stringProp>
-      </HTTPSamplerProxy>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="APIs">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up " enabled="true">
+          <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/signup</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;firstName&quot;: &quot;${firstName}&quot;,&#xd;
+  &quot;middleName&quot;: &quot;${middleName}&quot;,&#xd;
+  &quot;lastName&quot;: &quot;${lastName}&quot;,&#xd;
+  &quot;email&quot;: &quot;${dynamicEmail}&quot;,&#xd;
+  &quot;countryCode&quot;: &quot;${countryCode}&quot;,&#xd;
+  &quot;phoneNumber&quot;: &quot;${dynamicPhone}&quot;,&#xd;
+  &quot;dateOfBirth&quot;: &quot;${dateOfBirth}&quot;,&#xd;
+  &quot;password&quot;: &quot;${password}&quot;,&#xd;
+  &quot;confirmPassword&quot;: &quot;${confirmPassword}&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Dynamic User Sign Up ">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import java.nio.charset.StandardCharsets
+import java.util.Random
+
+
+// --- Load CSV using Universal Loader ---
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
+//def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;) // CSV file inside repo/csvs/
+
+// Get the loader back
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
+
+// Load from users.csv
+//def cols = loadCsvRow(&quot;users.csv&quot;)
+// --- Load CSV row using Universal Loader ---
+//def cols = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
+def loadCsv = props.get(&quot;universalCsvLoader&quot;)
+if (loadCsv == null) {
+    throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
+}
+def cols = loadCsv(&quot;users.csv&quot;)
+//def cols = userRow
+
+// --- Assign CSV values with defaults ---
+def firstName       = cols[0] ?: &quot;DefaultFirst&quot;
+def middleName      = cols[1] ?: &quot;&quot;
+def lastName        = cols[2] ?: &quot;DefaultLast&quot;
+def emailPrefix     = cols[3] ?: &quot;user&quot;
+def countryCode     = cols[4] ?: &quot;+91&quot;
+def phoneNumber     = cols[5] ?: &quot;9876500000&quot;
+def dateOfBirth     = cols[6] ?: &quot;2000-01-01&quot;
+def password        = cols[7] ?: &quot;Password@123&quot;
+def confirmPassword = cols[8] ?: password
+def industryType = (cols.size() &gt; 9 ? cols[9] : &quot;GENERAL&quot;)
+
+// --- Dynamic data ---
+def timestamp = new Date().format(&quot;yyyyMMddHHmmss&quot;, TimeZone.getTimeZone(&quot;Asia/Kolkata&quot;))
+def random = (1000 + new Random().nextInt(9000)).toString()
+
+def dynamicEmail = &quot;${emailPrefix}_${timestamp}_${random}@example.com&quot;
+
+def basePhone = vars.get(&quot;phoneNumber&quot;) ?: &quot;9876500000&quot;
+def phonePrefix = basePhone.length() &gt;= 6 ? basePhone.substring(0, 6) : &quot;98765&quot;
+def dynamicPhone = phonePrefix + random
+//vars.put(&quot;dynamicPhone&quot;, phonePrefix + random)
+
+// --- Put into JMeter vars ---
+vars.put(&quot;firstName&quot;, firstName)
+vars.put(&quot;middleName&quot;, middleName)
+vars.put(&quot;lastName&quot;, lastName)
+vars.put(&quot;emailPrefix&quot;, emailPrefix)
+vars.put(&quot;countryCode&quot;, countryCode)
+vars.put(&quot;phoneNumber&quot;, phoneNumber)
+vars.put(&quot;dateOfBirth&quot;, dateOfBirth)
+vars.put(&quot;password&quot;, password)
+vars.put(&quot;confirmPassword&quot;, confirmPassword)
+vars.put(&quot;industryType&quot;, industryType)
+
+vars.put(&quot;dynamicEmail&quot;, dynamicEmail)
+vars.put(&quot;dynamicPhone&quot;, dynamicPhone)
+
+// --- Debug log ---
+log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${dynamicEmail}, Phone=${dynamicPhone}&quot;)</stringProp>
+            <stringProp name="TestPlan.comments">jenkins </stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Login" enabled="true">
+          <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;email&quot;: &quot;${dynamicEmail}&quot;,&#xd;
+  &quot;password&quot;: &quot;${password}&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor using Universal CSV Loader User Login" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy
+import org.apache.jmeter.protocol.http.control.HeaderManager
+import org.apache.jmeter.protocol.http.control.Header
+import groovy.json.JsonSlurper
+
+
+// ============================================================
+// 🔹 Use Universal CSV Loader
+// ============================================================
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
+
+// load one row from users.csv
+//def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;)
+def loadCsv = props.get(&quot;universalCsvLoader&quot;)
+if (loadCsv == null) {
+    throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
+}
+def cols = loadCsv(&quot;users.csv&quot;)
+
+def emailPrefix = cols[3] ?: &quot;testuser&quot;
+def password    = cols[7] ?: &quot;Password@123&quot;
+def email       = emailPrefix + &quot;@example.com&quot;
+
+// 🔑 Get domain from Jenkins parameter (fallback = localhost)
+def domain = props.get(&quot;domain&quot;) ?: &quot;localhost&quot;
+vars.put(&quot;domain&quot;, domain)
+
+// 🔑 Retrieve existing token
+def jwtToken = vars.get(&quot;authToken&quot;)
+
+if (!jwtToken || jwtToken.trim().isEmpty()) {
+    log.warn(&quot;⚠️ JWT Token is missing or expired! Fetching new one for user: ${email}...&quot;)
+
+    try {
+        // ✅ API details
+        def loginEndpoint = &quot;/hrms/api/user/login&quot;
+
+        // ✅ Create HTTP Sampler for login request
+        def sampler = new HTTPSamplerProxy()
+        sampler.setDomain(domain)
+        sampler.setProtocol(&quot;https&quot;)
+        sampler.setPath(loginEndpoint)
+        sampler.setMethod(&quot;POST&quot;)
+        sampler.setPostBodyRaw(true)
+
+        // ✅ Request body from CSV
+        def bodyData = &quot;&quot;&quot;{&quot;email&quot;:&quot;${email}&quot;, &quot;password&quot;:&quot;${password}&quot;}&quot;&quot;&quot;
+        sampler.addNonEncodedArgument(&quot;&quot;, bodyData, &quot;&quot;)
+
+        // ✅ Headers
+        def headerManager = new HeaderManager()
+        headerManager.add(new Header(&quot;Content-Type&quot;, &quot;application/json&quot;))
+        sampler.setHeaderManager(headerManager)
+
+        // ✅ Execute login
+        def sampleResult = sampler.sample()
+        def responseBody = sampleResult.getResponseDataAsString()
+        def responseCode = sampleResult.getResponseCode()
+
+        log.info(&quot;🔹 Login API Response Code: &quot; + responseCode)
+        log.info(&quot;🔹 Login API Response: &quot; + responseBody)
+
+        if (responseCode == &quot;200&quot; &amp;&amp; responseBody?.trim()) {
+            def jsonResponse = new JsonSlurper().parseText(responseBody)
+
+            // ✅ Extract token
+            def newToken = jsonResponse?.token ?: jsonResponse?.jwtToken ?: jsonResponse?.access_token
+
+            if (newToken) {
+                vars.put(&quot;authToken&quot;, newToken)
+                log.info(&quot;✅ New JWT Token obtained: &quot; + newToken)
+            } else {
+                log.error(&quot;❌ JWT Token missing in response! Check API JSON.&quot;)
+            }
+        } else {
+            log.error(&quot;❌ Login API failed! Status Code: &quot; + responseCode)
+        }
+    } catch (Exception e) {
+        log.error(&quot;🚨 Error retrieving JWT Token: &quot; + e.getMessage(), e)
+    }
+} else {
+    log.info(&quot;🔹 Using existing JWT Token: &quot; + jwtToken)
+}
+
+// ✅ Final check
+def storedToken = vars.get(&quot;authToken&quot;)
+if (!storedToken || storedToken.trim().isEmpty()) {
+    log.error(&quot;🚨 JWT Token is STILL missing after login attempt!&quot;)
+} else {
+    log.info(&quot;🔹 Final Stored JWT Token: &quot; + storedToken)
+}
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">jwtToken</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.jwtToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">0</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NO_TOKEN_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Register post" enabled="true">
+          <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/company/register</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;companyName&quot;: &quot;${companyName}&quot;,&#xd;
+  &quot;companyEmail&quot;: &quot;${companyEmail}&quot;,&#xd;
+  &quot;industryType&quot;: &quot;${industryType}&quot;,&#xd;
+  &quot;companyWebsite&quot;: &quot;${companyWebsite}&quot;,&#xd;
+  &quot;companySize&quot;: &quot;${companySize}&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor  Company Register post" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import java.util.UUID
+import java.util.Random
+
+
+// --- Load CSV using Universal Loader ---
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
+//def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;) // CSV file inside repo/csvs/
+
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
+//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
+//def cols = loadCsvRow(&quot;users.csv&quot;)
+def loadCsv = props.get(&quot;universalCsvLoader&quot;)
+if (loadCsv == null) {
+    throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
+}
+def cols = loadCsv(&quot;users.csv&quot;)
+
+// --- Assign CSV values with defaults ---
+def firstName       = cols[0] ?: &quot;DefaultFirst&quot;
+def middleName      = cols[1] ?: &quot;&quot;
+def lastName        = cols[2] ?: &quot;DefaultLast&quot;
+def emailPrefix     = cols[3] ?: &quot;user&quot;
+def countryCode     = cols[4] ?: &quot;+91&quot;
+def phoneNumber     = cols[5] ?: &quot;9876500000&quot;
+def dateOfBirth     = cols[6] ?: &quot;2000-01-01&quot;
+def password        = cols[7] ?: &quot;Password@123&quot;
+def confirmPassword = cols[8] ?: password
+def industryType    = cols[9] ?: &quot;TECHNOLOGY&quot;
+
+// --- Generate unique ID for company ---
+def uniqueID = UUID.randomUUID().toString().substring(0, 8)
+
+// --- Company Data ---
+def companyName   = &quot;Company_&quot; + firstName + &quot;_&quot; + uniqueID
+def companyEmail  = (emailPrefix ?: &quot;user&quot;) + &quot;_&quot; + uniqueID + &quot;@example.com&quot;
+
+def validIndustries = [&quot;INFORMATION_TECHNOLOGY&quot;, &quot;BANKING_FINANCIAL_SERVICES&quot;, &quot;MANUFACTURING&quot;, &quot;CONSULTING&quot;]
+def finalIndustry   = validIndustries.contains(industryType.toUpperCase().replace(&quot; &quot;, &quot;_&quot;)) 
+                        ? industryType 
+                        : validIndustries[new Random().nextInt(validIndustries.size())]
+
+def companyDomain  = &quot;company&quot; + uniqueID
+def companyWebsite = &quot;https://www.&quot; + companyDomain + &quot;.com&quot;
+def companySize    = (10..500).toList().get(new Random().nextInt(491)).toString()
+
+// --- Domain from Jenkins Parameter ---
+def domain = vars.get(&quot;DOMAIN&quot;) ?: &quot;localhost&quot;
+
+// --- Store all variables in JMeter ---
+vars.put(&quot;firstName&quot;, firstName)
+vars.put(&quot;middleName&quot;, middleName)
+vars.put(&quot;lastName&quot;, lastName)
+vars.put(&quot;emailPrefix&quot;, emailPrefix)
+vars.put(&quot;countryCode&quot;, countryCode)
+vars.put(&quot;phoneNumber&quot;, phoneNumber)
+vars.put(&quot;dateOfBirth&quot;, dateOfBirth)
+vars.put(&quot;password&quot;, password)
+vars.put(&quot;confirmPassword&quot;, confirmPassword)
+vars.put(&quot;industryType&quot;, finalIndustry)
+
+vars.put(&quot;companyName&quot;, companyName)
+vars.put(&quot;companyEmail&quot;, companyEmail)
+vars.put(&quot;companyWebsite&quot;, companyWebsite)
+vars.put(&quot;companySize&quot;, companySize)
+
+// --- Add domain for API requests ---
+vars.put(&quot;domain&quot;, domain)
+
+// --- Debug Logging ---
+//log.info(&quot;✅ Loaded row #${vars.getObject(&apos;usersCsvRowIndex&apos;)-1} from users.csv → ${firstName} ${lastName}, Email=${companyEmail}, Domain=${domain}, Industry=${finalIndustry}&quot;)
+log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail}, Industry=${finalIndustry}&quot;)
+</stringProp>
+            <stringProp name="TestPlan.comments">jenkins</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Company Id Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">companyId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.companyId </stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">0</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND </stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Refersh Token" enabled="true">
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;email&quot;: &quot;${dynamicEmail}&quot;,&#xd;
+  &quot;password&quot;: &quot;${password}&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Refresh token Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">jwtToken</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.jwtToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">0</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User-ID get" enabled="true">
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Universal CSV Loader" enabled="false">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">// ============================================================
+// 🔹 Universal CSV Loader Function (Global) Universal CSV Loader Function (Thread-Safe &amp; Jenkins-Safe)
+// ============================================================
+import org.apache.jmeter.services.FileServer
+import java.nio.charset.StandardCharsets
+
+def loadCsvRow = { String csvName, String indexKey = null -&gt;
+// --- Resolve base directory safely ---
+def baseDir = props.get(&quot;basedir&quot;)
+if (!baseDir || baseDir.trim().isEmpty()){
+	//baseDir = new File(vars.get(&quot;JMX_FILE&quot;) ?: &quot;.&quot;).getParent()  // fallback to JMX location
+	// baseDir = new File(ctx.getCurrentSampler().testPlan.file).parent
+	 //baseDir = FileServer.getFileServer().getBaseDir()
+	 baseDir = FileServer.getFileServer()?.getBaseDir() ?: System.getProperty(&quot;user.dir&quot;)
+    
+	//if (!baseDir) baseDir = &quot;.&quot;  // final fallback = current dir
+	}
+	
+    //def csvPath = baseDir + &quot;/csvs/&quot; + csvName
+    def csvPath = baseDir + File.separator + &quot;csvs&quot; + File.separator + csvName
+    def file = new File(csvPath)
+    
+    if (!file.exists()) {
+        throw new IllegalStateException(&quot;CSV file not found: ${csvPath}&quot;)
+    }
+
+    def lines = file.readLines(&quot;UTF-8&quot;)
+    def rows = lines.drop(1) // skip header
+
+    if (rows.isEmpty()) {
+        throw new IllegalStateException(&quot;CSV file ${csvPath} has no data rows!&quot;)
+    }
+
+     // --- Thread-safe key for row tracking ---
+      def threadId = threadSuffix ?: ctx.getThreadNum() // use thread number if no suffix
+      def key = &quot;${csvName}_rowIndex_${threadId}&quot;
+
+ //def key = indexKey ?: (csvName + &quot;_rowIndex&quot;)
+      // --- Get current rowIndex and increment ---
+       def rowIndex = (vars.getObject(key) ?: 0) as int
+         if (rowIndex &gt;= rows.size()) rowIndex = 0
+    vars.putObject(key, rowIndex + 1)
+    
+ // tracker key (unique per CSV file if not provided)
+   // def key = indexKey ?: (csvName + &quot;_rowIndex&quot;)
+    
+  //  def rowIndex = (vars.getObject(key) ?: 0) as int
+    //if (rowIndex &gt;= rows.size()) rowIndex = 0
+    //vars.putObject(key, rowIndex + 1)
+
+    return rows[rowIndex].split(&quot;,&quot;, -1)*.trim()
+}
+
+// 🔹 Store function in JMeter context so others can use it
+props.put(&quot;loadCsvRow&quot;, loadCsvRow)
+log.info(&quot;✅ Universal CSV Loader initialized. BaseDir=&quot; +
+         (props.get(&quot;basedir&quot;) ?: FileServer.getFileServer()?.getBaseDir() ?: System.getProperty(&quot;user.dir&quot;)))
+</stringProp>
+      </JSR223PreProcessor>
+      <hashTree/>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Universal CSV Loader (Multi-CSV, Thread-Safe)">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">import org.apache.jmeter.services.FileServer
+import org.apache.commons.io.FileUtils
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
+
+if (props.get(&quot;__universalCsvLoaderInit&quot;) == null) {
+    def csvRegistry = new ConcurrentHashMap&lt;String, Map&gt;()
+
+    // Resolve baseDir once here (safe usage of FileServer)
+    def baseDir = new File(FileServer.getFileServer().getBaseDir())
+
+    def csvLoader = { String filename -&gt;
+       // def file = new File(baseDir, &quot;csvs&quot; + File.separator + filename)
+       def file = new File(new File(baseDir, &quot;csvs&quot;), filename)
+
+        if (!file.exists()) {
+            throw new FileNotFoundException(&quot;CSV file not found: ${file.absolutePath}&quot;)
+        }
+
+        if (!csvRegistry.containsKey(filename)) {
+            def rows = FileUtils.readLines(file, StandardCharsets.UTF_8)
+                .findAll { it.trim() &amp;&amp; !it.startsWith(&quot;#&quot;) }
+                .collect { it.split(&quot;,&quot;)*.trim() }
+            def counter = new AtomicInteger(0)
+            csvRegistry.put(filename, [rows: rows, counter: counter])
+            log.info(&quot;📂 Registered CSV: ${filename}, rows=${rows.size()}&quot;)
+        }
+
+        def entry = csvRegistry.get(filename)
+        def index = entry.counter.getAndIncrement() % entry.rows.size()
+        if (index &gt;= entry.rows.size()) {
+    throw new IllegalStateException(&quot;CSV exhausted: ${filename}&quot;)
+}
+        vars.put(&quot;rowIndex&quot;, index.toString())
+        return entry.rows[index]
+    }
+
+    props.put(&quot;universalCsvLoader&quot;, csvLoader)
+    props.put(&quot;__universalCsvLoaderInit&quot;, &quot;true&quot;)
+
+    log.info(&quot;✅ Universal CSV Loader initialized. BaseDir=${baseDir.absolutePath}&quot;)
+}
+</stringProp>
+      </JSR223PreProcessor>
       <hashTree/>
     </hashTree>
   </hashTree>
-</hashTree>
 </jmeterTestPlan>
