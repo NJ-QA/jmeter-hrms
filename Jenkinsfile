@@ -5,7 +5,7 @@
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan..."
-                bat 'runTest.bat -Jdomain=qa.myserver.com'
+                bat 'runTest.bat'
             }
         }
 
@@ -41,5 +41,6 @@
         }
     }
 }
+
 
 
