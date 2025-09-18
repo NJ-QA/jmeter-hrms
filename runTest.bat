@@ -15,8 +15,7 @@ set WORKSPACE=%~dp0
 REM 🔹 Define paths
 set TEST_PLAN=%WORKSPACE%HRMS_MB.jmx
 set RESULT_DIR=%WORKSPACE%results
-set TS=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
-set REPORT_DIR=%WORKSPACE%reports\%TS%
+set REPORT_DIR=%WORKSPACE%reports\latest
 set CSV_DIR=%WORKSPACE%csvs
 set IMG_DIR=%WORKSPACE%images
 
@@ -46,4 +45,5 @@ if %ERRORLEVEL% neq 0 (
 )
 
 endlocal
+
 
