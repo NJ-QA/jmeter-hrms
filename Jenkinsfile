@@ -9,8 +9,8 @@ pipeline {
 
     }
 
-     stages {
-        stage('Debug Paths') {
+    stages {
+         stage('Debug Paths') {
             steps {
                 echo "WORKSPACE path: ${env.TEST_PLAN}"
                 echo "Test plan path: ${env.TEST_PLAN}"
@@ -18,9 +18,7 @@ pipeline {
                 echo "Reports dir:   ${env.REPORTS_DIR}"
             }
         }
-     }
-
-    stages {
+        
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan..."
@@ -61,3 +59,4 @@ pipeline {
         }
     }
 }
+
