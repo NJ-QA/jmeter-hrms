@@ -24,7 +24,7 @@ pipeline {
 
         stage('Archive CSV + Images') {
             steps {
-                archiveArtifacts artifacts: 'csv/**, images/**', fingerprint: true
+                archiveArtifacts artifacts: 'csvs/**, images/**', fingerprint: true
             }
         }
     }
@@ -36,3 +36,4 @@ pipeline {
         }
     }
 }
+
