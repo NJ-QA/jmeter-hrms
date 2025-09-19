@@ -11,6 +11,7 @@ if "%JMETER_HOME%"=="" set JMETER_HOME=C:\apache-jmeter-5.6.3
 if "%TEST_PLAN%"=="" set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
 if "%RESULTS_DIR%"=="" set RESULTS_DIR=%WORKSPACE%\results
 if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
+set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
 
 REM ------------------------------
 REM Ensure results and reports directories exist
@@ -28,7 +29,9 @@ REM ------------------------------
 REM Run JMeter test plan
 REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
-"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\results-%TS%.csv" -e -o "%REPORTS_DIR%\latest"
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
+    -l "%RESULTS_DIR%\results-%TS%.csv" ^
+    -e -o "%REPORT_FOLDER%"
 
 REM Check if JMeter run succeeded
 if %ERRORLEVEL% NEQ 0 (
