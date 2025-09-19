@@ -36,11 +36,13 @@ pipeline {
         stage('Verify and Publish JMeter HTML Report') {
             steps {
                 script {
+                    def buildReportDir = "${env.REPORTS_DIR}/jmeter-report-${env.BUILD_NUMBER}"
+                    
                     // ✅ Verify HTML report exists in "latest"
                     bat """
-                        if exist "${REPORTS_DIR}\\latest\\index.html" (
+                        if exist "${buildReportDir}\\index.html" (
                             echo HTML report exists:
-                            dir "${REPORTS_DIR}\\latest"
+                            dir "${buildReportDir}"
                         ) else (
                             echo ERROR: HTML report not found!
                             exit /b 1
@@ -49,7 +51,7 @@ pipeline {
 
                     // ✅ Publish from "latest"
                     publishHTML(target: [
-                        reportDir: "${env.REPORTS_DIR}/latest",
+                        reportDir: buildReportDir,
                         reportFiles: 'index.html',
                         reportName: "JMeterTestReport-${BUILD_NUMBER}",
                         keepAll: true,
@@ -62,6 +64,7 @@ pipeline {
 
         stage('Archive Results + Test Data') {
             steps {
+                // ✅ Archive CSV, images & all reports
                 archiveArtifacts artifacts: 'results/**, csvs/**, images/**, reports/**', fingerprint: true
             }
         }
@@ -78,12 +81,14 @@ pipeline {
             echo "❌ JMeter test failed! Check console output for details."
         }
         success {
-            echo "✅ JMeter test completed successfully!"
-            echo "📊 Report via HTML Publisher: JMeterTestReport-${BUILD_NUMBER}"
-            echo "📂 Direct Artifact Link: ${env.BUILD_URL}artifact/reports/latest/index.html"
+          echo "✅ JMeter test completed successfully!"
+            echo "📊 Report (UI): JMeter Report Build ${BUILD_NUMBER}"
+            echo "📂 Artifact (direct): ${env.BUILD_URL}artifact/reports/jmeter-report-${BUILD_NUMBER}/index.html"
+            echo "📂 Latest copy: ${env.BUILD_URL}artifact/reports/latest/index.html"
         }
     }
 }
+
 
 
 
