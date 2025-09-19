@@ -42,7 +42,7 @@ pipeline {
                     bat """
                         if exist "${buildReportDir}\\index.html" (
                             echo HTML report exists:
-                            dir "${buildReportDir}"
+                            dir "${buildReportDir}\\index.html"
                         ) else (
                             echo ERROR: HTML report not found!
                             exit /b 1
@@ -88,6 +88,7 @@ pipeline {
         }
     }
 }
+
 
 
 
