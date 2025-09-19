@@ -29,9 +29,13 @@ pipeline {
         stage('Setup JMeter') {
             steps {
                 bat """
+                if not exist "%JMETER_HOME%" (
                     echo Downloading Apache JMeter...
                     powershell -command "Invoke-WebRequest -Uri https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-%JMETER_VERSION%.zip -OutFile jmeter.zip"
                     powershell -command "Expand-Archive -Path jmeter.zip -DestinationPath %WORKSPACE% -Force"
+               ) else (
+                echo Using cached JMeter at %JMETER_HOME%
+                )
                 """
             }
         }
@@ -84,5 +88,3 @@ pipeline {
         }
     }
 }
-
-
