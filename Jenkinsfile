@@ -18,6 +18,7 @@ pipeline {
                 echo "Reports dir:   ${env.REPORTS_DIR}"
             }
         }
+     }
 
     stages {
         stage('Run JMeter Test') {
@@ -60,5 +61,3 @@ pipeline {
         }
     }
 }
-
-
