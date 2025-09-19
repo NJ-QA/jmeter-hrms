@@ -46,7 +46,10 @@ if exist "%REPORTS_DIR%\latest" (
     echo Cleaning old latest folder...
     rmdir /s /q "%REPORTS_DIR%\latest"
 )
-xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest" >nul
+REM After JMeter run completes successfully
+echo Copying report to latest folder...
+if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
+xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
 
 echo Test completed successfully!
 echo HTML report is here:
