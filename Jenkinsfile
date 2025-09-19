@@ -71,7 +71,7 @@ pipeline {
         always {
             echo "Cleaning workspace..."
             echo "Skipping workspace cleanup to preserve JMeter and results."
-            // deleteDir() removed to keep JMeter and results cached
+             deleteDir() removed to keep JMeter and results cached
         }
         failure {
             echo "❌ JMeter test failed! Check console output for details."
@@ -81,3 +81,4 @@ pipeline {
         }
     }
 }
+
