@@ -68,25 +68,12 @@
             <stringProp name="script">import java.nio.charset.StandardCharsets
 import java.util.Random
 
-
 // --- Load CSV using Universal Loader ---
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
-//def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;) // CSV file inside repo/csvs/
-
-// Get the loader back
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
-
-// Load from users.csv
-//def cols = loadCsvRow(&quot;users.csv&quot;)
-// --- Load CSV row using Universal Loader ---
-//def cols = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
 def loadCsv = props.get(&quot;universalCsvLoader&quot;)
 if (loadCsv == null) {
     throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
 }
 def cols = loadCsv(&quot;users.csv&quot;)
-//def cols = userRow
 
 // --- Assign CSV values with defaults ---
 def firstName       = cols[0] ?: &quot;DefaultFirst&quot;
@@ -109,7 +96,6 @@ def dynamicEmail = &quot;${emailPrefix}_${timestamp}_${random}@example.com&quot;
 def basePhone = vars.get(&quot;phoneNumber&quot;) ?: &quot;9876500000&quot;
 def phonePrefix = basePhone.length() &gt;= 6 ? basePhone.substring(0, 6) : &quot;98765&quot;
 def dynamicPhone = phonePrefix + random
-//vars.put(&quot;dynamicPhone&quot;, phonePrefix + random)
 
 // --- Put into JMeter vars ---
 vars.put(&quot;firstName&quot;, firstName)
@@ -164,7 +150,7 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${dynamicEmail},
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor using Universal CSV Loader User Login" enabled="true">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor using Universal CSV Loader User Login">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -178,11 +164,10 @@ import groovy.json.JsonSlurper
 // ============================================================
 // 🔹 Use Universal CSV Loader
 // ============================================================
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
 
 // load one row from users.csv
 //def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;)
+
 def loadCsv = props.get(&quot;universalCsvLoader&quot;)
 if (loadCsv == null) {
     throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
@@ -311,7 +296,7 @@ if (!storedToken || storedToken.trim().isEmpty()) {
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor  Company Register post" enabled="true">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor  Company Register post">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -319,18 +304,12 @@ if (!storedToken || storedToken.trim().isEmpty()) {
             <stringProp name="script">import java.util.UUID
 import java.util.Random
 
-
 // --- Load CSV using Universal Loader ---
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
-//def cols = loadCsvRow(&quot;users.csv&quot;, &quot;usersCsvRowIndex&quot;) // CSV file inside repo/csvs/
-
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;)
-//def loadCsvRow = props.get(&quot;loadCsvRow&quot;).call(&quot;users.csv&quot;)
-//def cols = loadCsvRow(&quot;users.csv&quot;)
 def loadCsv = props.get(&quot;universalCsvLoader&quot;)
 if (loadCsv == null) {
     throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
 }
+
 def cols = loadCsv(&quot;users.csv&quot;)
 
 // --- Assign CSV values with defaults ---
@@ -385,7 +364,6 @@ vars.put(&quot;companySize&quot;, companySize)
 vars.put(&quot;domain&quot;, domain)
 
 // --- Debug Logging ---
-//log.info(&quot;✅ Loaded row #${vars.getObject(&apos;usersCsvRowIndex&apos;)-1} from users.csv → ${firstName} ${lastName}, Email=${companyEmail}, Domain=${domain}, Industry=${finalIndustry}&quot;)
 log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail}, Industry=${finalIndustry}&quot;)
 </stringProp>
             <stringProp name="TestPlan.comments">jenkins</stringProp>
@@ -467,7 +445,7 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
           </HeaderManager>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -505,72 +483,7 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Universal CSV Loader" enabled="false">
-        <stringProp name="scriptLanguage">groovy</stringProp>
-        <stringProp name="parameters"></stringProp>
-        <stringProp name="filename"></stringProp>
-        <stringProp name="cacheKey">true</stringProp>
-        <stringProp name="script">// ============================================================
-// 🔹 Universal CSV Loader Function (Global) Universal CSV Loader Function (Thread-Safe &amp; Jenkins-Safe)
-// ============================================================
-import org.apache.jmeter.services.FileServer
-import java.nio.charset.StandardCharsets
-
-def loadCsvRow = { String csvName, String indexKey = null -&gt;
-// --- Resolve base directory safely ---
-def baseDir = props.get(&quot;basedir&quot;)
-if (!baseDir || baseDir.trim().isEmpty()){
-	//baseDir = new File(vars.get(&quot;JMX_FILE&quot;) ?: &quot;.&quot;).getParent()  // fallback to JMX location
-	// baseDir = new File(ctx.getCurrentSampler().testPlan.file).parent
-	 //baseDir = FileServer.getFileServer().getBaseDir()
-	 baseDir = FileServer.getFileServer()?.getBaseDir() ?: System.getProperty(&quot;user.dir&quot;)
-    
-	//if (!baseDir) baseDir = &quot;.&quot;  // final fallback = current dir
-	}
-	
-    //def csvPath = baseDir + &quot;/csvs/&quot; + csvName
-    def csvPath = baseDir + File.separator + &quot;csvs&quot; + File.separator + csvName
-    def file = new File(csvPath)
-    
-    if (!file.exists()) {
-        throw new IllegalStateException(&quot;CSV file not found: ${csvPath}&quot;)
-    }
-
-    def lines = file.readLines(&quot;UTF-8&quot;)
-    def rows = lines.drop(1) // skip header
-
-    if (rows.isEmpty()) {
-        throw new IllegalStateException(&quot;CSV file ${csvPath} has no data rows!&quot;)
-    }
-
-     // --- Thread-safe key for row tracking ---
-      def threadId = threadSuffix ?: ctx.getThreadNum() // use thread number if no suffix
-      def key = &quot;${csvName}_rowIndex_${threadId}&quot;
-
- //def key = indexKey ?: (csvName + &quot;_rowIndex&quot;)
-      // --- Get current rowIndex and increment ---
-       def rowIndex = (vars.getObject(key) ?: 0) as int
-         if (rowIndex &gt;= rows.size()) rowIndex = 0
-    vars.putObject(key, rowIndex + 1)
-    
- // tracker key (unique per CSV file if not provided)
-   // def key = indexKey ?: (csvName + &quot;_rowIndex&quot;)
-    
-  //  def rowIndex = (vars.getObject(key) ?: 0) as int
-    //if (rowIndex &gt;= rows.size()) rowIndex = 0
-    //vars.putObject(key, rowIndex + 1)
-
-    return rows[rowIndex].split(&quot;,&quot;, -1)*.trim()
-}
-
-// 🔹 Store function in JMeter context so others can use it
-props.put(&quot;loadCsvRow&quot;, loadCsvRow)
-log.info(&quot;✅ Universal CSV Loader initialized. BaseDir=&quot; +
-         (props.get(&quot;basedir&quot;) ?: FileServer.getFileServer()?.getBaseDir() ?: System.getProperty(&quot;user.dir&quot;)))
-</stringProp>
-      </JSR223PreProcessor>
-      <hashTree/>
-      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Universal CSV Loader (Multi-CSV, Thread-Safe)">
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Universal CSV Loader (Multi-CSV, Thread-Safe)" enabled="true">
         <stringProp name="scriptLanguage">groovy</stringProp>
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
@@ -617,6 +530,7 @@ if (props.get(&quot;__universalCsvLoaderInit&quot;) == null) {
     props.put(&quot;__universalCsvLoaderInit&quot;, &quot;true&quot;)
 
     log.info(&quot;✅ Universal CSV Loader initialized. BaseDir=${baseDir.absolutePath}&quot;)
+   
 }
 </stringProp>
       </JSR223PreProcessor>
