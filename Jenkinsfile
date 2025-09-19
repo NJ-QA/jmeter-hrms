@@ -6,6 +6,10 @@ pipeline {
         TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
+
+        echo ${TEST_PLAN}
+        echo ${RESULTS_DIR}
+        echo ${REPORTS_DIR}
     }
 
     stages {
@@ -49,3 +53,4 @@ pipeline {
         }
     }
 }
+
