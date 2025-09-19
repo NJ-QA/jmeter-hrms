@@ -1,0 +1,2 @@
+code,name,leaveGrantPolicy,autoGeneratePolicy,calendarStartMonth,description,maxDays,carryForwardDays,isActive,filePath
+ANNUALss-2024431166,Annual Leave 2024,BY_LEAVE_CALENDAR,false,January,"Annual leave entitlement for 2024",20,5,true,images\PAN.png

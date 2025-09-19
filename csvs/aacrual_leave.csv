@@ -1,0 +1,2 @@
+yearlyQuota,accrualDayOfMonth,expiresInDays,maxBalanceDays,allowExtraLeave,extraDaysWithinYear,extraDaysBeyondYear,isActive
+15.8,6,365,19.0,false,0,true

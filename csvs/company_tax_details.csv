@@ -1,0 +1,3 @@
+companyId,panNumber,tanNumber,gstNumber,crcNumber,msmeNumber,ptxNumber,professionalTaxState,mode
+1,ABCDE1234F,PQRS12345T,22ABCDE1234F1Z5,CRC123456,MSME987654,PTX654321,MAHARASHTRA,static
+2,,,,,,,dynamic

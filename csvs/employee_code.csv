@@ -1,0 +1,4 @@
+name,numberOfDigits,nextSequenceNumber,description
+EMP-AUTO-1,4,1,Auto-generated code for employees
+EMP-AUTO-2,5,10,Second test entry
+EMP-AUTO-3,6,100,Third test

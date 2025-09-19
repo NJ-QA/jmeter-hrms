@@ -1,0 +1,4 @@
+name,description,active
+Beginner,Beginner level skill,true
+Intermediate,Can perform tasks,false
+Expert,High-level expertise,true

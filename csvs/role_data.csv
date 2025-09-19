@@ -1,0 +1,5 @@
+companySize,industryType,websiteType
+72,INFORMATION_TECHNOLOGY,valid
+abc,INVALID_ENUM,valid
+50,SOFTWARE,invalid
+100,HEALTHCARE,invalid

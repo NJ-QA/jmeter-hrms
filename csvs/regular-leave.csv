@@ -1,0 +1,2 @@
+subType,maxConsecutiveDays,maxDaysPerMonth,minDaysBetweenApplications,requiresAttachment,attachmentRequiredAfterDays,active
+ANNUAL_LEAVE,3,5,2,true,2,false

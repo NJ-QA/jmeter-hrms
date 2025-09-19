@@ -1,0 +1,2 @@
+allowHalfDay,allowQuarterDay,priorNoticeDays,restrictBackdateDays,roundOffPolicy,reasonMandatory,restrictEmployeeApplication,attachmentMandatoryDays,earliestApplicationDays,maxConsecutiveDays,maxDaysPerMonth,minDaysBetweenApplications,sandwichPolicy,sandwichIncludeWeeklyOffDays,sandwichPolicyEnabled,isActive
+true,false,2,7,HALF_DAY,true,false,5,30,15,5,2,LEAVE_BEFORE_WEEKEND_OR_HOLIDAY,2,true,true

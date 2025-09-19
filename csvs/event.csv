@@ -1,0 +1,4 @@
+eventType,meetingType,title,description,participantIds,notificationTypes,repeatPattern,startTime,endTime,platform,eventLink
+MEETING,REMOTE,Leave Approval Meeting,Your leave is approved,754,868,24589,"EMAIL,PUSH_NOTIFICATION",ONCE,2025-10-20T03:00:00,2025-10-20T03:20:00,Zoom,https://zoom.us/signin#/login
+HOLIDAY,,Diwali Holiday,Office Closed,754,868,24589,"EMAIL,PUSH_NOTIFICATION",YEARLY,2025-11-12T00:00:00,2025-11-12T23:59:00,,
+REMINDER,,Document Submission Reminder,Submit docs soon,754,"EMAIL,APP_NOTIFICATION",ONCE,2025-07-10T09:00:00,2025-07-10T09:30:00,,

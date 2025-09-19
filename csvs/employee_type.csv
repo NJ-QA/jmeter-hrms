@@ -1,0 +1,8 @@
+name,maritalStatus,typeName
+Kapish Malivia,SINGLE,FULL_TIME
+Sita Rani,MARRIED,INTERN
+Rohan Kumar,DIVORCED,FULL_TIME
+Priya Sharma,WIDOWED,FULL_TIME
+Aman Sharma,SEPARATED,FULL_TIME
+Invalid Status User,DOCTORATE,FULL_TIME
+Empty Marital,,FULL_TIME
