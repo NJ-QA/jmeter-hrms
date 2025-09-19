@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     environment {
- JMETER_VERSION = '5.6.3'
+        JMETER_VERSION = '5.6.3'
         JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-${JMETER_VERSION}"
         TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
-
     }
 
     stages {
@@ -87,4 +86,6 @@ pipeline {
             echo "✅ JMeter test completed successfully!"
         }
     }
+}
 	
+
