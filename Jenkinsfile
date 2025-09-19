@@ -57,14 +57,14 @@ pipeline {
                 ])
             }
         }
-			
+		}	
 
         stage('Archive Results + Test Data') {
             steps {
                 archiveArtifacts artifacts: 'results/**, csvs/**, images/**', fingerprint: true
             }
         }
-    }
+    
 
     post {
         always {
@@ -79,6 +79,7 @@ pipeline {
             echo "✅ JMeter test completed successfully!"
         }
     }
+}
 }
 
 
