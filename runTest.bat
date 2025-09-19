@@ -38,4 +38,3 @@ if %ERRORLEVEL% NEQ 0 (
 echo Test completed successfully!
 echo HTML report is here:
 echo %REPORTS_DIR%\latest\index.html
-pause
