@@ -58,7 +58,7 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: '${REPORTS_DIR}\\latest',
+                    reportDir: '%REPORTS_DIR%\\latest',
                     reportFiles: 'index.html',
                     reportName: "JMeterTestReport-${env.BUILD_NUMBER}",
                     keepAll: true,
@@ -89,6 +89,7 @@ pipeline {
     }
 }
 	
+
 
 
 
