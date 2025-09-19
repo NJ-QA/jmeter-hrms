@@ -7,10 +7,17 @@ pipeline {
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
 
-        echo ${TEST_PLAN}
-        echo ${RESULTS_DIR}
-        echo ${REPORTS_DIR}
     }
+
+     stages {
+        stage('Debug Paths') {
+            steps {
+                echo "WORKSPACE path: ${env.TEST_PLAN}"
+                echo "Test plan path: ${env.TEST_PLAN}"
+                echo "Results dir:   ${env.RESULTS_DIR}"
+                echo "Reports dir:   ${env.REPORTS_DIR}"
+            }
+        }
 
     stages {
         stage('Run JMeter Test') {
@@ -53,4 +60,5 @@ pipeline {
         }
     }
 }
+
 
