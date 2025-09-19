@@ -36,35 +36,35 @@ pipeline {
         stage('Verify and Publish JMeter HTML Report') {
             steps {
 				script {
-					 // Verify HTML report exists
+					 // ✅ Verify HTML report exists
 					bat """
-	 if exit "${REPORTS_DIR}\\latest\\index.html" (
-  echo HTML report exists:
-  dir "${REPORTS_DIR}\\latest"
-  ) else (
-  echo ERROR: HTML report not found!
-                        exit /b 1
-)
-"""
-					// publish HTML Report
-			publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}/latest",
-                    reportFiles: 'index.html',
-                    reportName: "JMeterTestReport-${BUILD_NUMBER}",
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true,
-                    allowMissing: false
+					 if exit "${REPORTS_DIR}\\latest\\index.html" (
+						echo HTML report exists:
+						 dir "${REPORTS_DIR}\\latest"
+ 						 ) else (
+							  echo ERROR: HTML report not found!
+                      			  exit /b 1
+						)
+						"""
+					//✅ Publish HTML report
+					publishHTML(target: [
+                  	  	reportDir: "${env.REPORTS_DIR}/latest",
+                    	reportFiles: 'index.html',
+                    	reportName: "JMeterTestReport-${BUILD_NUMBER}",
+                    	keepAll: true,
+                    	alwaysLinkToLastBuild: true,
+                    	allowMissing: false
                 ])
             }
         }
-		}	
+	}	
 
         stage('Archive Results + Test Data') {
             steps {
                 archiveArtifacts artifacts: 'results/**, csvs/**, images/**', fingerprint: true
             }
         }
-    
+	}
 
     post {
         always {
@@ -79,7 +79,8 @@ pipeline {
             echo "✅ JMeter test completed successfully!"
         }
     }
+	
 }
-}
+
 
 
