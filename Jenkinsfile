@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        JMETER_VERSION = '5.6.3'
-        JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-${JMETER_VERSION}"
+        JMETER_VERSION = '5.6.3'      
+	 set JMETER_HOME = "C:\apache-jmeter-5.6.3"
         TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
@@ -88,4 +88,5 @@ pipeline {
     }
 }
 	
+
 
