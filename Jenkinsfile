@@ -79,9 +79,12 @@ pipeline {
         }
         success {
             echo "✅ JMeter test completed successfully!"
+            echo "📊 Report via HTML Publisher: JMeterTestReport-${BUILD_NUMBER}"
+            echo "📂 Direct Artifact Link: ${env.BUILD_URL}artifact/reports/latest/index.html"
         }
     }
 }
+
 
 
 
