@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JMETER_VERSION = '5.6.3'      
-	 set JMETER_HOME = "C:\apache-jmeter-5.6.3"
+	 	JMETER_HOME = 'C:\\apache-jmeter-5.6.3'
         TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
@@ -12,6 +12,7 @@ pipeline {
     stages {
          stage('Debug Paths') {
             steps {
+				echo "JMeter Home: ${env.JMETER_HOME}"
                 echo "WORKSPACE path: ${env.WORKSPACE}"
                 echo "Test plan path: ${env.TEST_PLAN}"
                 echo "Results dir:   ${env.RESULTS_DIR}"
@@ -88,5 +89,6 @@ pipeline {
     }
 }
 	
+
 
 
