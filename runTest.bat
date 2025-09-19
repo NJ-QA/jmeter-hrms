@@ -11,6 +11,7 @@ if "%JMETER_HOME%"=="" set JMETER_HOME=C:\apache-jmeter-5.6.3
 if "%TEST_PLAN%"=="" set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
 if "%RESULTS_DIR%"=="" set RESULTS_DIR=%WORKSPACE%\results
 if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
+if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=local
 set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
 
 REM ------------------------------
@@ -38,6 +39,15 @@ if %ERRORLEVEL% NEQ 0 (
     echo ERROR: JMeter test failed!
     exit /b %ERRORLEVEL%
 )
+REM ------------------------------
+REM Refresh "latest" symlink folder
+REM ------------------------------
+if exist "%REPORTS_DIR%\latest" (
+    echo Cleaning old latest folder...
+    rmdir /s /q "%REPORTS_DIR%\latest"
+)
+xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest" >nul
+
 echo Test completed successfully!
 echo HTML report is here:
 echo %REPORTS_DIR%\latest\index.html
