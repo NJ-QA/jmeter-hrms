@@ -1,48 +1,38 @@
-﻿@echo off
-REM ==========================================================
-REM JMeter Test Runner with CSV/IMG Paths + Report Generation
-REM ==========================================================
+@echo off
+REM ===============================
+REM JMeter Automated Run Script (Jenkins-Friendly)
+REM Uses Jenkins WORKSPACE for results and reports
+REM ===============================
 
-setlocal
-
-REM 🔹 Define JMeter home (update if installed in different path)
+REM Set JMeter Home
 set JMETER_HOME=C:\apache-jmeter-5.6.3
-set JMETER_BIN=%JMETER_HOME%\bin
 
-REM 🔹 Define repo workspace (Jenkins/Git checkout folder)
-set WORKSPACE=%~dp0
+REM Set test plan path (your JMX script)
+set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
 
-REM 🔹 Define paths
-set TEST_PLAN=%WORKSPACE%HRMS_MB.jmx
-set RESULT_DIR=%WORKSPACE%results
-set REPORT_DIR=%WORKSPACE%reports\latest
-set CSV_DIR=%WORKSPACE%csvs
-set IMG_DIR=%WORKSPACE%images
+REM Results and reports directories inside Jenkins workspace
+set RESULTS_DIR=%WORKSPACE%\results
+set REPORTS_DIR=%WORKSPACE%\reports
 
-REM 🔹 Cleanup old results
-if exist "%RESULT_DIR%" rmdir /s /q "%RESULT_DIR%"
-if exist "%REPORT_DIR%" rmdir /s /q "%REPORT_DIR%"
+REM Generate timestamp (YYYYMMDD_HHMMSS)
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
+set TS=%ldt:~0,8%_%ldt:~8,6%
 
-mkdir "%RESULT_DIR%"
-mkdir "%REPORT_DIR%"
+REM Clean old results/reports
+echo Cleaning old results and reports...
+if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
+if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
 
-REM 🔹 Run JMeter test plan
-echo Running JMeter test plan: %TEST_PLAN%
-"%JMETER_BIN%\jmeter.bat" ^
-  -n ^
-  -t "%TEST_PLAN%" ^
-  -l "%RESULT_DIR%\results.jtl" ^
-  -e -o "%REPORT_DIR%" ^
-  -Jcsv.dir="%CSV_DIR%" ^
-  -Jimg.dir="%IMG_DIR%" %*
+REM Recreate directories
+mkdir "%RESULTS_DIR%"
+mkdir "%REPORTS_DIR%"
 
-REM 🔹 Exit with last error level
-if %ERRORLEVEL% neq 0 (
-    echo ❌ JMeter execution failed!
-    exit /b %ERRORLEVEL%
-) else (
-    echo ✅ JMeter execution completed successfully.
-)
+REM Run JMeter with user.properties, save results and generate HTML into "latest"
+echo Running JMeter test plan...
+"%JMETER_HOME%\bin\jmeter.bat" -p "%JMETER_HOME%\bin\user.properties" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\results-%TS%.csv" -e -o "%REPORTS_DIR%\latest"
 
-endlocal
-
+echo.
+echo Test completed successfully!
+echo Open the report in your browser:
+echo %REPORTS_DIR%\latest\index.html
+pause

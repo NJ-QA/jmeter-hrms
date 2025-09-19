@@ -1,0 +1,6 @@
+name,description,active
+Communication,Ability to convey ideas,true
+Technical,Hands-on with tools,false
+Leadership,Manages teams and strategy,true
+Invalid Skill,,false
+,Missing name,false

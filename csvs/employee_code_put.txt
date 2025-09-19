@@ -1,0 +1,3 @@
+name,numberOfDigits,nextSequenceNumber,description
+Emp-Updated,4,2,Updated employee code description
+Emp-Final,5,3,Final test entry
