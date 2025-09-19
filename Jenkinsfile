@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Run JMeter Test') {
+            steps {
+                echo "Running JMeter Test Plan..."
+                bat 'runTest_workspace.bat -Jdomain=qa.myserver.com'
+            }
+        }
+
+        stage('Publish JMeter HTML Report') {
+            steps {
+                publishHTML(target: [
+                    reportDir: 'reports/latest',
+                    reportFiles: 'index.html',
+                    reportName: 'JMeterTestReport',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
+            }
+        }
+
+        stage('Archive CSV + Images') {
+            steps {
+                archiveArtifacts artifacts: 'csv/**, images/**', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning workspace..."
+            deleteDir()
+        }
+    }
+}
