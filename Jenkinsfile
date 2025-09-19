@@ -26,41 +26,19 @@ pipeline {
             }
         }
 
-        stage('Setup JMeter') {
+         stage('Run JMeter Test') {
             steps {
-                bat """
-                if not exist "%JMETER_HOME%" (
-                    echo Downloading Apache JMeter...
-                    powershell -command "Invoke-WebRequest -Uri https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-%JMETER_VERSION%.zip -OutFile jmeter.zip"
-                    powershell -command "Expand-Archive -Path jmeter.zip -DestinationPath %WORKSPACE% -Force"
-               ) else (
-                echo Using cached JMeter at %JMETER_HOME%
-                )
-                """
+                echo "Running JMeter Test Plan: ${env.TEST_PLAN}"
+                bat '"%WORKSPACE%\\runTest.bat"'
             }
         }
         
-       stage('Run JMeter Test') {
-            steps {
-                bat """
-                    echo Cleaning old results...
-                    if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
-                    if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
-                    mkdir "%RESULTS_DIR%"
-                    mkdir "%REPORTS_DIR%"
-
-                    echo Running JMeter test plan: %TEST_PLAN%
-                    "%JMETER_HOME%\\bin\\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\\results.csv" -e -o "%REPORTS_DIR%\\latest"
-                """
-            }
-        }
-
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: '%REPORTS_DIR%\\latest',
+                    reportDir: "${REPORTS_DIR}\\latest",
                     reportFiles: 'index.html',
-                    reportName: "JMeterTestReport-${env.BUILD_NUMBER}",
+                    reportName: "JMeterTestReport-${BUILD_NUMBER}",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: false
@@ -78,7 +56,8 @@ pipeline {
     post {
         always {
             echo "Cleaning workspace..."
-            deleteDir()
+			echo "Skipping workspace cleanup to preserve JMeter and results."
+            //deleteDir() removed to keep JMeter and results cached
         }
         failure {
             echo "❌ JMeter test failed! Check console output for details."
@@ -89,6 +68,7 @@ pipeline {
     }
 }
 	
+
 
 
 
