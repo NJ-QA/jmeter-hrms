@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JMETER_HOME = 'C:\\apache-jmeter-5.6.3'
-        TEST_PLAN = "${env.WORKSPACE}\\HRMS_MB.jmx"
+        TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${env.WORKSPACE}\\results"
         REPORTS_DIR = "${env.WORKSPACE}\\reports"
     }
@@ -12,16 +12,7 @@ pipeline {
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan..."
-                bat """
-                REM Generate timestamp
-                for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set ldt=%%I
-                set TS=%%ldt:~0,8%%_%%ldt:~8,6%%
-                
-                REM Run JMeter
-                "%JMETER_HOME%\\bin\\jmeter.bat" -p "%JMETER_HOME%\\bin\\user.properties" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\\results-%TS%.csv" -e -o "%REPORTS_DIR%\\latest"
-                
-                if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-                """
+                bat 'runTest.bat'
             }
         }
 
@@ -38,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('Archive CSV + Images') {
+        stage('Archive Results + Test Data') {
             steps {
                 archiveArtifacts artifacts: 'results/*.csv, csvs/**, images/**', fingerprint: true
             }
@@ -51,7 +42,10 @@ pipeline {
             deleteDir()
         }
         failure {
-            echo "JMeter test failed! Check console output for details."
+            echo "❌ JMeter test failed! Check console output for details."
+        }
+        success {
+            echo "✅ JMeter test completed successfully!"
         }
     }
 }
