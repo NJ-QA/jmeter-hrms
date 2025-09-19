@@ -6,10 +6,14 @@ REM ===============================
 REM Set JMeter Home and Test Plan
 set JMETER_HOME=C:\apache-jmeter-5.6.3
 set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
+echo Workspace path : %WORKSPACE%
+echo Test plan path: %TEST_PLAN%
 
 REM Results and Reports Directories
 set RESULTS_DIR=%WORKSPACE%\results
 set REPORTS_DIR=%WORKSPACE%\reports
+echo RESULTS_DIR path : %RESULTS_DIR%
+echo REPORTS_DIR path : %REPORTS_DIR%
 
 REM Generate timestamp (YYYYMMDD_HHMMSS)
 for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
