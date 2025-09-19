@@ -16,12 +16,16 @@ if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
 for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
 set TS=%ldt:~0,8%_%ldt:~8,6%
+set RESULT_FILE=%RESULTS_DIR%\results-%TS%.csv
 
 echo Running JMeter test plan: %TEST_PLAN%
-"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
-    -l "%RESULTS_DIR%\results-%TS%.csv" ^
-    -e -o "%REPORT_FOLDER%"
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULT_FILE%"
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
+echo Generating HTML report from %RESULT_FILE%
+if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
+"%JMETER_HOME%\bin\jmeter.bat" -g "%RESULT_FILE%" -o "%REPORT_FOLDER%"
+ 
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: JMeter test failed!
     exit /b %ERRORLEVEL%
