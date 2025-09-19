@@ -48,7 +48,7 @@ pipeline {
 						"""
 					//✅ Publish HTML report
 					publishHTML(target: [
-                  	  	reportDir: "${env.REPORTS_DIR}/latest",
+                  	  	reportDir: "${env.REPORTS_DIR}/build-${env.BUILD_NUMBER}",
                     	reportFiles: 'index.html',
                     	reportName: "JMeterTestReport-${BUILD_NUMBER}",
                     	keepAll: true,
@@ -81,6 +81,7 @@ pipeline {
     }
 	
 }
+
 
 
 
