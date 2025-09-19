@@ -7,6 +7,7 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="APIs">
@@ -152,7 +153,7 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${dynamicEmail},
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor  User Login">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor  User Login" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -297,7 +298,7 @@ if (!storedToken || storedToken.trim().isEmpty()) {
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Company Register post">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Company Register post" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -446,7 +447,7 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
           </HeaderManager>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -512,6 +513,7 @@ if (props.get(&quot;__universalCsvLoaderInit&quot;) == null) {
         if (!csvRegistry.containsKey(filename)) {
             def rows = FileUtils.readLines(file, StandardCharsets.UTF_8)
                 .findAll { it.trim() &amp;&amp; !it.startsWith(&quot;#&quot;) }
+                .drop(1) // skip header
                 .collect { it.split(&quot;,&quot;)*.trim() }
             def counter = new AtomicInteger(0)
             csvRegistry.put(filename, [rows: rows, counter: counter])
