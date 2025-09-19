@@ -27,41 +27,40 @@ for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set 
 set TS=%ldt:~0,8%_%ldt:~8,6%
 
 REM ------------------------------
-REM Run JMeter test plan (only execution, CSV generated)
+REM Clean report folder before run
 REM ------------------------------
-set RESULT_FILE=%RESULTS_DIR%\results-%TS%.csv
+if exist "%REPORT_FOLDER%" (
+    echo Cleaning old report folder: %REPORT_FOLDER%
+    rmdir /s /q "%REPORT_FOLDER%"
+)
+
+REM ------------------------------
+REM Run JMeter test plan
+REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
-"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULT_FILE%"
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
+    -l "%RESULTS_DIR%\results-%TS%.csv" ^
+    -e -o "%REPORT_FOLDER%"
 
+REM Check if JMeter run succeeded
 if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: JMeter test failed during execution!
+    echo ERROR: JMeter test failed!
     exit /b %ERRORLEVEL%
 )
 
 REM ------------------------------
-REM Generate JMeter HTML dashboard from results CSV
-REM ------------------------------
-echo Generating HTML report from %RESULT_FILE%
-"%JMETER_HOME%\bin\jmeter.bat" -g "%RESULT_FILE%" -o "%REPORT_FOLDER%"
-
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: JMeter report generation failed!
-    exit /b %ERRORLEVEL%
-)
-
-REM ------------------------------
-REM Refresh "latest" folder (clean + copy new report)
+REM Refresh "latest" folder
 REM ------------------------------
 if exist "%REPORTS_DIR%\latest" (
     echo Cleaning old latest folder...
     rmdir /s /q "%REPORTS_DIR%\latest"
 )
-echo Copying report to latest folder...
-xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest" >nul
 
-REM ------------------------------
-REM Done
-REM ------------------------------
-echo Test completed successfully!
-echo HTML report is here:
+echo Copying report to latest folder...
+xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
+
+echo ========================================
+echo ✅ Test completed successfully!
+echo ✅ HTML report available at:
 echo %REPORTS_DIR%\latest\index.html
+echo ========================================
