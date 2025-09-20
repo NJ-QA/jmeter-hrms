@@ -29,7 +29,7 @@ pipeline {
         stage('Run JMeter Test') {
             steps {
                 echo "Running JMeter Test Plan: ${env.TEST_PLAN}"
-                bat '"%WORKSPACE%\\runTest.bat"'
+                bat  "\"%WORKSPACE%\\runTest.bat\" \"%WORKSPACE%\""
             }
         }
 
@@ -65,4 +65,5 @@ pipeline {
         }
     }
 }
+
 
