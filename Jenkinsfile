@@ -39,7 +39,7 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: '${env.WORKSPACE}\\reports\\latest',
+                    reportDir: '${WORKSPACE}\\reports\\latest',
                     reportFiles: 'index.html',
                     reportName: 'JMeter HTML Report'
                 ])
@@ -65,3 +65,4 @@ pipeline {
         }
     }
 }
+
