@@ -2,11 +2,10 @@ pipeline {
     agent any
 
     environment {
-        JMETER_VERSION = '5.6.3'
-        JMETER_HOME = 'C:\\apache-jmeter-5.6.3'
-        TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
-        RESULTS_DIR = "${env.WORKSPACE}\\results"
-        REPORTS_DIR = "${env.WORKSPACE}\\reports"
+        JMETER_HOME = "C:\\apache-jmeter-5.6.3"
+        TEST_PLAN = "${WORKSPACE}\\HRMS_MB.jmx"
+        RESULTS_DIR = "${WORKSPACE}\\results"
+        REPORTS_DIR = "${WORKSPACE}\\reports"
     }
 
     stages {
@@ -15,55 +14,68 @@ pipeline {
                 echo "JMeter Home: ${env.JMETER_HOME}"
                 echo "WORKSPACE path: ${env.WORKSPACE}"
                 echo "Test plan path: ${env.TEST_PLAN}"
-                echo "Results dir: ${env.RESULTS_DIR}"
-                echo "Reports dir: ${env.REPORTS_DIR}"
+                echo "Results dir:   ${env.RESULTS_DIR}"
+                echo "Reports dir:   ${env.REPORTS_DIR}"
             }
         }
 
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/NJ-QA/jmeter-hrms.git'
-            }
-        }
-
-        stage('Run JMeter Test') {
+        stage('Run JMeter Test + Generate Report') {
             steps {
                 echo "Running JMeter Test Plan: ${env.TEST_PLAN}"
-                bat  "\"%WORKSPACE%\\runTest.bat\" \"%WORKSPACE%\""
+
+                bat """
+                set RESULTS_DIR=%WORKSPACE%\\results
+                set REPORTS_DIR=%WORKSPACE%\\reports
+                set REPORT_FOLDER=%REPORTS_DIR%\\build-%BUILD_NUMBER%
+
+                if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
+                if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
+
+                rem === Clean report folder before generating ===
+                if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
+
+                rem === Run JMeter test with CSV + HTML report ===
+                "%JMETER_HOME%\\bin\\jmeter.bat" -n -t "%TEST_PLAN%" ^
+                   -l "%RESULTS_DIR%\\results-%BUILD_NUMBER%.csv" ^
+                   -e -o "%REPORT_FOLDER%"
+
+                rem === Copy report to 'latest' for Jenkins publish ===
+                if exist "%REPORTS_DIR%\\latest" rmdir /s /q "%REPORTS_DIR%\\latest"
+                xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\\latest"
+                """
             }
         }
 
-        stage('Verify and Publish HTML Report') {
+        stage('Publish JMeter HTML Report') {
             steps {
-               publishHTML(target: [
+                publishHTML(target: [
                     allowMissing: false,
-                    alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: "${WORKSPACE}\\reports\\latest",
-                    reportFiles: 'index.html',
-                    reportName: 'JMeter HTML Report'
+                    alwaysLinkToLastBuild: true,
+                    reportDir: "reports/latest",
+                    reportFiles: "index.html",
+                    reportName: "JMeter HTML Report"
                 ])
             }
         }
 
-        stage('Archive Results + Test Data') {
+        stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, csvs/**, images/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**', 'csvs/**', 'images/**', fingerprint: true
             }
         }
     }
 
     post {
         always {
-            echo "Skipping workspace cleanup to preserve JMeter and results."
+            echo "Cleaning up old workspaces..."
+            // cleanWs()  // optional
         }
         failure {
-            echo "❌ JMeter test failed! Check console output for details."
+            echo "❌ JMeter test failed! Check logs."
         }
         success {
-            echo "✅ JMeter test completed successfully!"
+            echo "✅ JMeter test & report generated successfully!"
         }
     }
 }
-
-
