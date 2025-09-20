@@ -35,28 +35,14 @@ pipeline {
 
         stage('Verify and Publish HTML Report') {
             steps {
-                script {
-                    // ✅ Verify HTML report exists
-                    bat """
-                    if exist "${REPORTS_DIR}\\latest\\index.html" (
-                        echo HTML report exists:
-                        dir "${REPORTS_DIR}\\latest"
-                    ) else (
-                        echo ERROR: HTML report not found!
-                        exit /b 1
-                    )
-                    """
-
-                    // ✅ Publish HTML report
-                    publishHTML(target: [
-                        reportDir: "${env.REPORTS_DIR}/latest",
-                        reportFiles: 'index.html',
-                        reportName: "JMeterTestReport-${BUILD_NUMBER}",
-                        keepAll: true,
-                        alwaysLinkToLastBuild: true,
-                        allowMissing: false
-                    ])
-                }
+               publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'reports/latest',
+                    reportFiles: 'index.html',
+                    reportName: 'JMeter HTML Report'
+                ])
             }
         }
 
@@ -79,3 +65,4 @@ pipeline {
         }
     }
 }
+
