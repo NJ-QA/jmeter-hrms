@@ -1,38 +1,49 @@
 @echo off
-REM ==========================
-REM Minimal JMeter Batch Script
-REM ==========================
+REM ============================================================================
+REM runTest.bat - Run JMeter test and generate HTML report (Jenkins compatible)
+REM ============================================================================
 
-REM ---- CONFIG ----
-set JMETER_HOME=C:\apache-jmeter-5.6.3
-set TEST_PLAN=HRMS_MB.jmx
-set RESULT_FILE=results.csv
-set REPORT_FOLDER=reports\report
-set LATEST_FOLDER=reports\latest
-
-REM ---- CLEAN OLD FILES ----
-if exist "%RESULT_FILE%" del "%RESULT_FILE%"
-if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
-if exist "%LATEST_FOLDER%" rmdir /s /q "%LATEST_FOLDER%"
-
-REM ---- RUN TEST ----
-echo Running JMeter test plan...
-"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULT_FILE%"
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: JMeter test failed!
-    exit /b %ERRORLEVEL%
+REM --- Accept WORKSPACE from Jenkins as first arg ---
+if "%~1"=="" (
+  set "WORKSPACE=%CD%"
+) else (
+  set "WORKSPACE=%~1"
 )
 
-REM ---- GENERATE HTML REPORT ----
-echo Generating HTML dashboard...
-"%JMETER_HOME%\bin\jmeter.bat" -g "%RESULT_FILE%" -o "%REPORT_FOLDER%"
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: Report generation failed!
-    exit /b %ERRORLEVEL%
+REM --- Setup paths ---
+set "JMETER_HOME=C:\apache-jmeter-5.6.3"
+set "TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx"
+set "RESULTS_DIR=%WORKSPACE%\results"
+set "REPORTS_DIR=%WORKSPACE%\reports"
+set "REPORT_LATEST=%REPORTS_DIR%\latest"
+
+REM --- Cleanup old results ---
+if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
+if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
+
+mkdir "%RESULTS_DIR%"
+mkdir "%REPORTS_DIR%"
+mkdir "%REPORT_LATEST%"
+
+REM --- Generate unique results file ---
+set "RESULTS_FILE=%RESULTS_DIR%\results-%DATE:~-4%%DATE:~3,2%%DATE:~0,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%.csv"
+set "RESULTS_FILE=%RESULTS_FILE: =0%"
+
+echo Running JMeter test plan: %TEST_PLAN%
+echo Results file: %RESULTS_FILE%
+echo Report dir: %REPORT_LATEST%
+
+REM --- Run JMeter test ---
+"%JMETER_HOME%\bin\jmeter.bat" ^
+  -n -t "%TEST_PLAN%" ^
+  -l "%RESULTS_FILE%" ^
+  -e -o "%REPORT_LATEST%"
+
+REM --- Verify report created ---
+if exist "%REPORT_LATEST%\index.html" (
+  echo ✅ JMeter HTML report generated successfully.
+  exit /b 0
+) else (
+  echo ❌ ERROR: JMeter report not found!
+  exit /b 1
 )
-
-REM ---- COPY TO LATEST ----
-xcopy /e /i /y "%REPORT_FOLDER%" "%LATEST_FOLDER%"
-
-echo ✅ Done! HTML report at %LATEST_FOLDER%\index.html
-exit /b 0
