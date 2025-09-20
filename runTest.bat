@@ -1,49 +1,64 @@
 @echo off
-REM ============================================================================
-REM runTest.bat - Run JMeter test and generate HTML report (Jenkins compatible)
-REM ============================================================================
+REM ========================================
+REM Universal JMeter Run Script for Windows
+REM Works on any Jenkins Windows node
+REM ========================================
 
-REM --- Accept WORKSPACE from Jenkins as first arg ---
-if "%~1"=="" (
-  set "WORKSPACE=%CD%"
-) else (
-  set "WORKSPACE=%~1"
+REM ------------------------------
+REM Use environment variables from Jenkins if available
+REM ------------------------------
+if "%JMETER_HOME%"=="" set JMETER_HOME=C:\apache-jmeter-5.6.3
+if "%TEST_PLAN%"=="" set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
+if "%RESULTS_DIR%"=="" set RESULTS_DIR=%WORKSPACE%\results
+if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
+if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=local
+
+set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
+
+REM ------------------------------
+REM Ensure results and reports directories exist
+REM ------------------------------
+if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
+if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
+
+REM ------------------------------
+REM Clean previous report folder for this build
+REM ------------------------------
+if exist "%REPORT_FOLDER%" (
+    echo Cleaning old report folder: %REPORT_FOLDER%
+    rmdir /s /q "%REPORT_FOLDER%"
 )
 
-REM --- Setup paths ---
-set "JMETER_HOME=C:\apache-jmeter-5.6.3"
-set "TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx"
-set "RESULTS_DIR=%WORKSPACE%\results"
-set "REPORTS_DIR=%WORKSPACE%\reports"
-set "REPORT_LATEST=%REPORTS_DIR%\latest"
+REM ------------------------------
+REM Generate timestamp (YYYYMMDD_HHMMSS)
+REM ------------------------------
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
+set TS=%ldt:~0,8%_%ldt:~8,6%
 
-REM --- Cleanup old results ---
-if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
-if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
-
-mkdir "%RESULTS_DIR%"
-mkdir "%REPORTS_DIR%"
-mkdir "%REPORT_LATEST%"
-
-REM --- Generate unique results file ---
-set "RESULTS_FILE=%RESULTS_DIR%\results-%DATE:~-4%%DATE:~3,2%%DATE:~0,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%.csv"
-set "RESULTS_FILE=%RESULTS_FILE: =0%"
-
+REM ------------------------------
+REM Run JMeter test plan
+REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
-echo Results file: %RESULTS_FILE%
-echo Report dir: %REPORT_LATEST%
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
+    -l "%RESULTS_DIR%\results-%TS%.csv" ^
+    -e -o "%REPORT_FOLDER%"
 
-REM --- Run JMeter test ---
-"%JMETER_HOME%\bin\jmeter.bat" ^
-  -n -t "%TEST_PLAN%" ^
-  -l "%RESULTS_FILE%" ^
-  -e -o "%REPORT_LATEST%"
-
-REM --- Verify report created ---
-if exist "%REPORT_LATEST%\index.html" (
-  echo ✅ JMeter HTML report generated successfully.
-  exit /b 0
-) else (
-  echo ❌ ERROR: JMeter report not found!
-  exit /b 1
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: JMeter test failed!
+    exit /b %ERRORLEVEL%
 )
+
+REM ------------------------------
+REM Refresh "latest" folder for Jenkins HTML publisher
+REM ------------------------------
+if exist "%REPORTS_DIR%\latest" (
+    echo Cleaning old latest folder...
+    rmdir /s /q "%REPORTS_DIR%\latest"
+)
+
+echo Copying current build report to latest folder...
+xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
+
+echo Test completed successfully!
+echo HTML report is here: %REPORTS_DIR%\latest\index.html
+pause
