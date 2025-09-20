@@ -1,11 +1,10 @@
 @echo off
-REM ========================================
-REM Universal JMeter Run Script for Windows
-REM Works on any Jenkins Windows node
-REM ========================================
+REM ===============================
+REM Jenkins-ready JMeter Run Script
+REM ===============================
 
 REM ------------------------------
-REM Use environment variables from Jenkins if available
+REM Environment variables (override from Jenkins if needed)
 REM ------------------------------
 if "%JMETER_HOME%"=="" set JMETER_HOME=C:\apache-jmeter-5.6.3
 if "%TEST_PLAN%"=="" set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
@@ -14,6 +13,7 @@ if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
 if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=local
 
 set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
+set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%.csv
 
 REM ------------------------------
 REM Ensure results and reports directories exist
@@ -24,24 +24,16 @@ if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 REM ------------------------------
 REM Clean previous report folder for this build
 REM ------------------------------
-if exist "%REPORT_FOLDER%" (
-    echo Cleaning old report folder: %REPORT_FOLDER%
-    rmdir /s /q "%REPORT_FOLDER%"
-)
+if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 
 REM ------------------------------
-REM Generate timestamp (YYYYMMDD_HHMMSS)
-REM ------------------------------
-for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
-set TS=%ldt:~0,8%_%ldt:~8,6%
-
-REM ------------------------------
-REM Run JMeter test plan
+REM Run JMeter CLI with HTML report
 REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
 "%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
-    -l "%RESULTS_DIR%\results-%TS%.csv" ^
-    -e -o "%REPORT_FOLDER%"
+    -l "%RESULT_FILE%" ^
+    -e -o "%REPORT_FOLDER%" ^
+    -q "%JMETER_HOME%\bin\user.properties"
 
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: JMeter test failed!
@@ -51,14 +43,8 @@ if %ERRORLEVEL% NEQ 0 (
 REM ------------------------------
 REM Refresh "latest" folder for Jenkins HTML publisher
 REM ------------------------------
-if exist "%REPORTS_DIR%\latest" (
-    echo Cleaning old latest folder...
-    rmdir /s /q "%REPORTS_DIR%\latest"
-)
-
-echo Copying current build report to latest folder...
+if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
 xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
 
 echo Test completed successfully!
 echo HTML report is here: %REPORTS_DIR%\latest\index.html
-pause
