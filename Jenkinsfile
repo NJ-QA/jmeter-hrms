@@ -61,7 +61,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**', 'csvs/**', 'images/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
             }
         }
     }
@@ -79,3 +79,4 @@ pipeline {
         }
     }
 }
+
