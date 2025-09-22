@@ -6,6 +6,7 @@ pipeline {
         TEST_PLAN = "${WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${WORKSPACE}\\results"
         REPORTS_DIR = "${WORKSPACE}\\reports"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -58,5 +59,6 @@ pipeline {
         }
     }
 }
+
 
 
