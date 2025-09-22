@@ -25,6 +25,7 @@ REM ------------------------------
 REM Clean previous report folder for this build
 REM ------------------------------
 if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
+if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
 REM Run JMeter CLI with HTML report
