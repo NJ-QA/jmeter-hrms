@@ -29,9 +29,9 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\latest",
+                    reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
-                    reportName: "JMeter HTML Report",
+                    reportName: "JMeter-HTML-Report",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: false
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**', reports/latest/**', fingerprint: true
             }
         }
     }
@@ -58,3 +58,4 @@ pipeline {
         }
     }
 }
+
