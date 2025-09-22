@@ -7,7 +7,6 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="APIs">
@@ -21,11 +20,13 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up " enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up ">
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/signup</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/user/signup</stringProp>
+          <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -60,7 +61,7 @@
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor User Sign Up ">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor User Sign Up " enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -121,11 +122,12 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${dynamicEmail},
           </JSR223PreProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Login" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Login">
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/login</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.path">hrms/api/user/login</stringProp>
+          <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -259,11 +261,12 @@ if (!storedToken || storedToken.trim().isEmpty()) {
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Register post" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Register post">
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/company/register</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.path">hrms/api/company/register</stringProp>
+          <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -379,10 +382,11 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Refersh Token" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Refersh Token">
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user/login</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.path">hrms/api/user/login</stringProp>
+          <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -421,9 +425,38 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User-ID get" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User-ID get">
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">https://hrms.modulobytes.com/hrms/api/user</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/user</stringProp>
+          <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company register get">
+          <stringProp name="TestPlan.comments">No CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/company</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -447,7 +480,427 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
           </HeaderManager>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company register update">
+          <stringProp name="TestPlan.comments">Sign up CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">/hrms/api/company</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+        &quot;companyName&quot;: &quot;Tech Innovators Inc.&quot;,&#xd;
+        &quot;companyWebsite&quot;: &quot;&quot;,&#xd;
+        &quot;companySize&quot;: &quot;100&quot;,&#xd;
+        &quot;industryType&quot;: &quot;&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="All industry get">
+          <stringProp name="TestPlan.comments">Sign up CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/company/industry-types</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Location post">
+          <stringProp name="TestPlan.comments">No CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">/hrms/api/locations</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${companyAddressRequestBody}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">companyId</stringProp>
+                <stringProp name="Header.value">${companyId}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Company Location post">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import java.util.UUID
+
+def loadCsv = props.get(&quot;universalCsvLoader&quot;)
+if (loadCsv == null) {
+    throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
+}
+def cols = loadCsv(&quot;address.csv&quot;)  // returns ArrayList&lt;String&gt;
+
+log.info(&quot;📌 CSV Row Loaded: &quot; + cols.toString())
+
+// Helper
+def fallback = { val, fallbackVal -&gt; (val != null &amp;&amp; !val.trim().isEmpty()) ? val : fallbackVal }
+
+// Assign using indexes
+def addressLine1 = fallback(cols[0], &quot;Default Street&quot;)
+def addressLine2 = fallback(cols[1], &quot;&quot;)
+def landmark     = fallback(cols[2], &quot;&quot;)
+def postalCode   = fallback(cols[3], &quot;000000&quot;)
+def cityId       = fallback(cols[4], &quot;100001&quot;)
+def stateId      = fallback(cols[5], &quot;4014&quot;)
+def countryId    = fallback(cols[6], &quot;101&quot;)
+
+def companyNameLoc  = fallback(cols[7], &quot;Default Name&quot;)
+def locationCode = fallback(cols[8], &quot;HO-&quot; + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+def timeZoneId   = fallback(cols[9], &quot;617&quot;)
+def groupEmail   = fallback(cols[10], &quot;hr@company.com&quot;)
+def longitude    = fallback(cols[11], &quot;77.44585346779&quot;)
+def latitude     = fallback(cols[12], &quot;12.98943459786&quot;)
+
+// Build JSON
+def requestBody = &quot;&quot;&quot;
+{
+  &quot;addressesRequestDto&quot;: {
+    &quot;addressLine1&quot;: &quot;${addressLine1}&quot;,
+    &quot;addressLine2&quot;: &quot;${addressLine2}&quot;,
+    &quot;landmark&quot;: &quot;${landmark}&quot;,
+    &quot;postalCode&quot;: &quot;${postalCode}&quot;,
+    &quot;cityId&quot;: ${cityId},
+    &quot;stateId&quot;: ${stateId},
+    &quot;countryId&quot;: ${countryId}
+  },
+  &quot;name&quot;: &quot;${companyNameLoc}&quot;,
+  &quot;locationCode&quot;: &quot;${locationCode}&quot;,
+  &quot;timeZoneId&quot;: &quot;${timeZoneId}&quot;,
+  &quot;groupEmail&quot;: &quot;${groupEmail}&quot;,
+  &quot;longitude&quot;: ${longitude},
+  &quot;latitude&quot;: ${latitude}
+}
+&quot;&quot;&quot;
+
+vars.put(&quot;companyAddressRequestBody&quot;, requestBody)
+log.info(&quot;✅ companyAddressRequestBody: ${requestBody}&quot;)
+</stringProp>
+            <stringProp name="TestPlan.comments">using address csv</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Company location PreProcessor" enabled="false">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import java.util.UUID
+
+def fallback = { val, fallbackVal -&gt; (val != null &amp;&amp; !val.trim().isEmpty()) ? val : fallbackVal }
+
+//def companyId = fallback(vars.get(&quot;companyId&quot;), String.valueOf(1000 + new Random().nextInt(9000)))
+def name = fallback(vars.get(&quot;name&quot;), &quot;Default Name&quot;)
+def locationCode = fallback(vars.get(&quot;locationCode&quot;), &quot;HO-&quot; + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+def timeZoneId = fallback(vars.get(&quot;timeZoneId&quot;), &quot;617&quot;)
+def groupEmail = fallback(vars.get(&quot;groupEmail&quot;), &quot;hr@company.com&quot;)
+def longitude = fallback(vars.get(&quot;longitude&quot;), &quot;77.44585346779&quot;)
+def latitude = fallback(vars.get(&quot;latitude&quot;), &quot;12.98943459786&quot;)
+
+def addressLine1 = fallback(vars.get(&quot;addressLine1&quot;), &quot;Default Street&quot;)
+def addressLine2 = fallback(vars.get(&quot;addressLine2&quot;), &quot;&quot;)
+def landmark = fallback(vars.get(&quot;landmark&quot;), &quot;&quot;)
+def postalCode = fallback(vars.get(&quot;postalCode&quot;), &quot;000000&quot;)
+def cityId = fallback(vars.get(&quot;cityId&quot;), &quot;100001&quot;)
+def stateId = fallback(vars.get(&quot;stateId&quot;), &quot;4014&quot;)
+def countryId = fallback(vars.get(&quot;countryId&quot;), &quot;101&quot;)
+
+def requestBody = &quot;&quot;&quot;
+{
+  &quot;addressesRequestDto&quot;: {
+    &quot;addressLine1&quot;: &quot;${addressLine1}&quot;,
+    &quot;addressLine2&quot;: &quot;${addressLine2}&quot;,
+    &quot;landmark&quot;: &quot;${landmark}&quot;,
+    &quot;postalCode&quot;: &quot;${postalCode}&quot;,
+    &quot;cityId&quot;: ${cityId},
+    &quot;stateId&quot;: ${stateId},
+    &quot;countryId&quot;: ${countryId}
+  },
+  &quot;name&quot;: &quot;${name}&quot;,
+  &quot;locationCode&quot;: &quot;${locationCode}&quot;,
+  &quot;timeZoneId&quot;: &quot;${timeZoneId}&quot;,
+  &quot;groupEmail&quot;: &quot;${groupEmail}&quot;,
+  &quot;longitude&quot;: ${longitude},
+  &quot;latitude&quot;: ${latitude}
+}
+&quot;&quot;&quot;
+
+vars.put(&quot;companyAddressRequestBody&quot;, requestBody)
+</stringProp>
+            <stringProp name="TestPlan.comments">addressLine1,addressLine2,landmark,postalCode,cityId,stateId,countryId,name,locationCode,timeZoneId,groupEmail,longitude,latitude
+Mukundpura Road,,Near Park,987656,132201,4014,101,Human Resources,HO-084893490,617,hr@company.com,77.44585346779,12.98943459786</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Company location Id Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">companyLocationId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Location get">
+          <stringProp name="TestPlan.comments">No CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/locations</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Company-ID</stringProp>
+                <stringProp name="Header.value">${companyId}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Company Location put">
+          <stringProp name="TestPlan.comments">No CSV</stringProp>
+          <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">hrms/api/locations/${companyLocationId}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${companyAddressPutBody}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${jwtToken}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Company-ID</stringProp>
+                <stringProp name="Header.value">${companyId}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Company location update PreProcessor" enabled="false">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import groovy.json.JsonBuilder
+import java.nio.charset.StandardCharsets
+import java.util.Random
+
+// From CSV
+def name = vars.get(&quot;name&quot;)
+def locationCode = vars.get(&quot;locationCode&quot;)
+def addressLine1 = vars.get(&quot;addressLine1&quot;)
+def addressLine2 = vars.get(&quot;addressLine2&quot;)
+def landmark = vars.get(&quot;landmark&quot;)
+def postalCode = vars.get(&quot;postalCode&quot;)
+def cityId = vars.get(&quot;cityId&quot;)?.toInteger()
+def stateId = vars.get(&quot;stateId&quot;)?.toInteger()
+def countryId = vars.get(&quot;countryId&quot;)?.toInteger()
+def timeZoneId = vars.get(&quot;timeZoneId&quot;)?.toInteger()
+def groupEmail = vars.get(&quot;groupEmail&quot;)
+def longitude = vars.get(&quot;longitude&quot;)?.toDouble()
+def latitude = vars.get(&quot;latitude&quot;)?.toDouble()
+
+// From JSON extractor
+def locationId = vars.get(&quot;companyLocationId&quot;)
+
+if (!locationId) {
+    log.warn(&quot;❌ No companyLocationId found. Ensure POST + Extractor ran correctly.&quot;)
+    return
+}
+
+// Build the request body
+def requestBody = [
+    addressesRequestDto: [
+        addressLine1 : addressLine1,
+        addressLine2 : addressLine2,
+        landmark     : landmark,
+        postalCode   : postalCode,
+        cityId       : cityId,
+        stateId      : stateId,
+        countryId    : countryId
+    ],
+    name        : name,
+    locationCode: locationCode,
+    timeZoneId  : timeZoneId,
+    groupEmail  : groupEmail,
+    longitude   : longitude,
+    latitude    : latitude
+]
+
+// Put in vars
+vars.put(&quot;companyAddressPutBody&quot;, new JsonBuilder(requestBody).toPrettyString())
+vars.put(&quot;companyPutUrl&quot;, &quot;/hrms/api/locations/${locationId}&quot;)
+log.info(&quot;✅ PUT Body:\n&quot; + vars.get(&quot;companyAddressPutBody&quot;))
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Company Location put" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import groovy.json.JsonBuilder
+
+def loadCsv = props.get(&quot;universalCsvLoader&quot;)
+if (loadCsv == null) {
+    throw new IllegalStateException(&quot;Universal CSV Loader not found! Did you add the init JSR223 Sampler?&quot;)
+}
+def cols = loadCsv(&quot;address.csv&quot;)  // returns List&lt;String&gt;
+log.info(&quot;📌 CSV Row Loaded: &quot; + cols.toString())
+
+// Assign fields by index
+def addressLine1  = cols[0]
+def addressLine2  = cols[1]
+def landmark      = cols[2]
+def postalCode    = cols[3]
+def cityId        = cols[4]?.toInteger()
+def stateId       = cols[5]?.toInteger()
+def countryId     = cols[6]?.toInteger()
+def companyName   = cols[7]
+def locationCode  = cols[8]
+def timeZoneId    = cols[9]?.toInteger()
+def groupEmail    = cols[10]
+def longitude     = cols[11]?.toDouble()
+def latitude      = cols[12]?.toDouble()
+
+// From JSON extractor
+def locationId = vars.get(&quot;companyLocationId&quot;)
+
+if (!locationId) {
+    log.warn(&quot;❌ No companyLocationId found. Ensure POST + Extractor ran correctly.&quot;)
+    return
+}
+
+// Build JSON
+def requestBody = [
+    addressesRequestDto: [
+        addressLine1 : addressLine1,
+        addressLine2 : addressLine2,
+        landmark     : landmark,
+        postalCode   : postalCode,
+        cityId       : cityId,
+        stateId      : stateId,
+        countryId    : countryId
+    ],
+    name        : companyName,
+    locationCode: locationCode,
+    timeZoneId  : timeZoneId,
+    groupEmail  : groupEmail,
+    longitude   : longitude,
+    latitude    : latitude
+]
+
+vars.put(&quot;companyAddressPutBody&quot;, new JsonBuilder(requestBody).toPrettyString())
+vars.put(&quot;companyPutUrl&quot;, &quot;/hrms/api/locations/${locationId}&quot;)
+
+log.info(&quot;✅ PUT Body:\n&quot; + vars.get(&quot;companyAddressPutBody&quot;))
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -490,13 +943,16 @@ log.info(&quot;✅ Loaded user: ${firstName} ${lastName}, Email=${companyEmail},
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
         <stringProp name="cacheKey">true</stringProp>
-        <stringProp name="script">import org.apache.jmeter.services.FileServer
+        <stringProp name="script">import org.apache.jmeter.util.JMeterUtils
+import org.apache.jmeter.services.FileServer
 import org.apache.commons.io.FileUtils
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-if (props.get(&quot;__universalCsvLoaderInit&quot;) == null) {
+// Always reload in CLI runs (to avoid stale data in Jenkins)
+def isNonGui = &quot;true&quot;.equalsIgnoreCase(JMeterUtils.getProp(&quot;jmeterengine.nongui&quot;))
+if (props.get(&quot;__universalCsvLoaderInit&quot;) == null || isNonGui) {
     def csvRegistry = new ConcurrentHashMap&lt;String, Map&gt;()
 
     // Resolve baseDir once here (safe usage of FileServer)
