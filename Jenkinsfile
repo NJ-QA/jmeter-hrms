@@ -49,13 +49,14 @@ pipeline {
             steps {
                 publishHTML(target: [
                     reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
+                    echo "Reports dir: %reportDir%"
                    //reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
-                    allowMissing: false,
-                    echo "Reports dir: ${reportDir}"
+                    allowMissing: false
+                    
                 ])
             }
         }
@@ -79,6 +80,7 @@ pipeline {
         }
     }
 }
+
 
 
 
