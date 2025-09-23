@@ -20,8 +20,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up ">
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
           <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -937,6 +936,28 @@ log.info(&quot;✅ PUT Body:\n&quot; + vars.get(&quot;companyAddressPutBody&quot
           </objProp>
           <stringProp name="filename"></stringProp>
         </ResultCollector>
+        <hashTree/>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="clear CSV cache">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">// Only clear CSV cache if build passes parameter
+def clearCache = vars.get(&quot;CLEAR_CSV_CACHE&quot;)?.toLowerCase() == &quot;true&quot;
+
+if (clearCache) {
+    if (props.get(&quot;universalCsvLoader&quot;) != null) {
+        props.remove(&quot;universalCsvLoader&quot;)
+        props.remove(&quot;__universalCsvLoaderInit&quot;)
+        log.info(&quot;✅ Universal CSV Loader cache cleared&quot;)
+    } else {
+        log.info(&quot;ℹ️ Universal CSV Loader not initialized yet&quot;)
+    }
+} else {
+    log.info(&quot;ℹ️ Skipping CSV cache clear (CLEAR_CSV_CACHE=false)&quot;)
+}
+</stringProp>
+        </JSR223PreProcessor>
         <hashTree/>
       </hashTree>
       <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor Universal CSV Loader (Multi-CSV, Thread-Safe)">
