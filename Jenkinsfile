@@ -27,6 +27,13 @@ pipeline {
             }
         }
 
+         stage('Debug Reports Folder') {
+            steps {
+                bat 'dir "%REPORTS_DIR%"'
+                bat 'dir "%REPORTS_DIR%\\latest"'
+            }
+        }
+
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
@@ -59,3 +66,4 @@ pipeline {
         }
     }
 }
+
