@@ -48,11 +48,11 @@ pipeline {
             steps {
                 bat '''
                     echo Creating/Updating latest report folder...
-                    if exist "%REPORTS_DIR%/latest" rmdir /s /q "%REPORTS_DIR%/latest"
-                    mkdir "%REPORTS_DIR%/latest"
-                    xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%/latest"                   
+                    if exist "%REPORTS_DIR%\\latest" rmdir /s /q "%REPORTS_DIR%\\latest"
+                    mkdir "%REPORTS_DIR%\\latest"
+                    xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\\latest"                   
                 '''
-                bat 'dir "${env.REPORTS_DIR}/latest"'
+                bat 'dir "${env.REPORTS_DIR}\\latest"'
             }
         }
 
@@ -67,8 +67,8 @@ pipeline {
                     allowMissing: false
                     
                 ])
-                echo "Reports dir: ${env.WORKSPACE}/reports/latest"
-                echo "Full HTML report path: ${env.WORKSPACE}/reports/latest/index.html"
+                echo "Reports dir: ${env.WORKSPACE}\\reports\\latest"
+                echo "Full HTML report path: ${env.WORKSPACE}\\reports\\latest\\index.html"
             }
         }
 
@@ -91,6 +91,7 @@ pipeline {
         }
     }
 }
+
 
 
 
