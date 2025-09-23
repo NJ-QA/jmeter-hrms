@@ -10,7 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Debug Paths') {
+        stage('Debug Paths & Latest CSV') {
             steps {
                 echo "JMeter Home: ${env.JMETER_HOME}"
                 echo "WORKSPACE path: ${env.WORKSPACE}"
@@ -18,6 +18,16 @@ pipeline {
                 echo "Results dir: ${env.RESULTS_DIR}"
                 echo "Reports dir: ${env.REPORTS_DIR}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
+
+                 // Print all CSV files and the latest one
+                bat """
+                    dir "%RESULTS_DIR%\\*.csv"
+                    for /f "delims=" %%i in ('dir /b /o-d "%RESULTS_DIR%\\*.csv"') do (
+                        echo Latest CSV: %%i
+                        goto :done
+                    )
+                    :done
+                """
             }
         }
 
@@ -30,15 +40,24 @@ pipeline {
 
          stage('Verify Reports Folder') {
             steps {
-                 echo "Checking report folder..."
-             bat 'dir "%REPORTS_DIR%\\build-%BUILD_NUMBER%"'
+                // Ensure the latest report folder exists before publishing
+            // bat 'dir "%REPORTS_DIR%\\build-%BUILD_NUMBER%"'
+                 bat """
+                    if exist "%REPORTS_DIR%\\latest\\index.html" (
+                        echo HTML report found: %REPORTS_DIR%\\latest\\index.html
+                    ) else (
+                        echo ERROR: HTML report missing!
+                        exit /b 1
+                    )
+                """
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
+                    //reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
+                    reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -50,7 +69,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**, reports/latest/**', fingerprint: true
             }
         }
     }
@@ -67,11 +86,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
-
-
-
