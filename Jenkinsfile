@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stages {
+       
         stage('Clean Reports') {
             steps {
                 bat '''
@@ -89,6 +89,7 @@ pipeline {
         }
     }
 }
+
 
 
 
