@@ -12,23 +12,21 @@ if "%RESULTS_DIR%"=="" set RESULTS_DIR=%WORKSPACE%\results
 if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
 if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=local
 
-REM ------------------------------
-REM Define dynamic result and report paths
-REM ------------------------------
-set TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%_%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
-set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%_%TIMESTAMP%.csv
-set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%_%TIMESTAMP%
+set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
+set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%.csv
 
 REM ------------------------------
-REM Ensure directories exist
+REM Ensure results and reports directories exist
 REM ------------------------------
 if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
 if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
+
 REM ------------------------------
-REM Clean previous latest folder
+REM Clean previous report folder for this build
 REM ------------------------------
-if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
+if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
+if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
 REM Debug: list CSV files
@@ -52,9 +50,11 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM ------------------------------
-REM Copy report and CSV to "latest"
+REM Refresh "latest" folder for Jenkins HTML publisher
 REM ------------------------------
+if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
 mkdir "%REPORTS_DIR%\latest"
+
 xcopy /e /i /y "%REPORT_FOLDER%\*" "%REPORTS_DIR%\latest\"
 copy /y "%RESULT_FILE%" "%REPORTS_DIR%\latest\"
 
