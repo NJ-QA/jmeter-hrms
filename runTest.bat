@@ -1,6 +1,6 @@
 @echo off
 REM ===============================
-REM Jenkins-ready JMeter Run Script (Clean, Fresh CSV & Report)
+REM Jenkins-ready JMeter Run Script (Fresh CSV & HTML report)
 REM ===============================
 
 REM ------------------------------
@@ -22,14 +22,16 @@ if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
 if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
 REM ------------------------------
-REM Clean previous results & report folder for this build
+REM Clean previous results & report folder
 REM ------------------------------
 if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
-REM Optional: clear Universal CSV Loader cache
-REM Only needed if you cache CSVs in props
-REM You can create a tiny Groovy script to clear CSV registry at start of test
+REM ------------------------------
+REM Debug: list CSV files
+REM ------------------------------
+echo Using CSV folder: %WORKSPACE%\csvs
+dir /b "%WORKSPACE%\csvs"
 
 REM ------------------------------
 REM Run JMeter CLI with HTML report
@@ -46,7 +48,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM ------------------------------
-REM Copy report to "latest" for Jenkins
+REM Copy report to "latest" for Jenkins HTML publisher
 REM ------------------------------
 if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
 xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
