@@ -21,7 +21,6 @@ REM ------------------------------
 if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
 if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
-
 REM ------------------------------
 REM Clean previous report folder for this build
 REM ------------------------------
@@ -29,22 +28,21 @@ if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
-REM Find the latest CSV (if any) and use it
+REM Detect latest CSV in results folder (if any)
 REM ------------------------------
 set "LATEST_CSV="
 for /f "delims=" %%i in ('dir /b /a-d /o-d "%RESULTS_DIR%\*.csv" 2^>nul') do (
-    set "latestCsv=%%i"
+    echo Latest CSV: %%i
+    set "LATEST_CSV=%%i"
     goto :found_csv
 )
-:found
-if defined latestCsv (
-    set RESULT_FILE=%RESULTS_DIR%\%latestCsv%
-    echo Latest CSV file: %RESULT_FILE%
-) else (
-    echo No CSV file found in %RESULTS_DIR%
-    set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%.csv
-)
+echo echo No previous CSV files found in %RESULTS_DIR%
+goto :run_jmeter
 
+:found_csv
+echo Latest existing CSV detected: %LATEST_CSV%
+
+:run_jmeter
 REM ------------------------------
 REM Run JMeter CLI with HTML report
 REM ------------------------------
