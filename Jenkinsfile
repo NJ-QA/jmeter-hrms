@@ -39,15 +39,15 @@ pipeline {
                     :done
                 """
                  echo "Listing HTML report folder:"
-                bat 'dir "%REPORTS_DIR%\\latest"'            
+                bat 'dir "%REPORTS_DIR%\\build-${env.BUILD_NUMBER}"'            
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    //reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
-                    reportDir: "${env.REPORTS_DIR}/latest",
+                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
+                   // reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -59,7 +59,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**, reports/latest/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
             }
         }
     }
@@ -76,4 +76,5 @@ pipeline {
         }
     }
 }
+
 
