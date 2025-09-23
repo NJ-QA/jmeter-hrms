@@ -22,6 +22,22 @@ pipeline {
             }
         }
 
+        stages {
+        stage('Clean Reports') {
+            steps {
+                bat '''
+                    if exist "%REPORTS_DIR%\\build-%BUILD_NUMBER%" (
+                        echo Cleaning old report folder: %REPORTS_DIR%\\build-%BUILD_NUMBER%
+                        rmdir /s /q "%REPORTS_DIR%\\build-%BUILD_NUMBER%"
+                    )
+                    if exist "%REPORTS_DIR%\\latest" (
+                        echo Cleaning old latest report folder
+                        rmdir /s /q "%REPORTS_DIR%\\latest%"
+                    )
+                '''
+            }
+        }
+        
        stage('Run JMeter Test + Generate Report') {
             steps {
                 echo "Running JMeter Test Plan..."
@@ -29,28 +45,20 @@ pipeline {
             }
         }
 
-         stage('Verify Latest Results & Report') {
+                  stage('Copy Latest Report') {
             steps {
-                echo "Listing latest CSV file:"
-                bat """
-                    for /f "delims=" %%i in ('dir /b /a-d /o-d "%RESULTS_DIR%\\*.csv" 2^>nul') do (
-                        echo Latest CSV: %%i
-                        goto :done
-                    )
-                    :done
-                """
-                 echo "Listing HTML report folder:"
-                bat """
-                dir "%REPORTS_DIR%\\build-${BUILD_NUMBER}"   
-                 """
+                bat '''
+                    echo Copying build-%BUILD_NUMBER% report into "latest"
+                    xcopy /e /i /y "%REPORTS_DIR%\\build-%BUILD_NUMBER%" "%REPORTS_DIR%\\latest"
+                '''
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",                    
-                   //reportDir: "${env.REPORTS_DIR}/latest",
+                    //reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",                    
+                   reportDir: "${env.REPORTS_DIR}\\latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -64,7 +72,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**, reports/latest/**', fingerprint: true
             }
         }
     }
@@ -81,6 +89,7 @@ pipeline {
         }
     }
 }
+
 
 
 
