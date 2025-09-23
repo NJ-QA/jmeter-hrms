@@ -30,14 +30,14 @@ pipeline {
          stage('Debug Reports Folder') {
             steps {
                 bat 'dir "%REPORTS_DIR%"'
-                bat 'dir "%REPORTS_DIR%\\build-${BUILD_NUMBER}'
+                bat 'dir "%REPORTS_DIR%\\build-%BUILD_NUMBER%"
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}/build-${BUILD_NUMBER}",
+                    reportDir: "${env.REPORTS_DIR}/build-%BUILD_NUMBER%",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -66,6 +66,7 @@ pipeline {
         }
     }
 }
+
 
 
 
