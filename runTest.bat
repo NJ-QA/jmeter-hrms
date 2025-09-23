@@ -1,5 +1,4 @@
 @echo off
-setlocal enabledelayedexpansion
 
 REM ==============================
 REM Environment variables
@@ -24,17 +23,18 @@ REM ==============================
 if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
 if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
-REM Clean previous build folder
-if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
-if exist "%RESULT_FILE%" del "%RESULT_FILE%"
+REM Clean old report folder to avoid "non empty" warnings
+if exist "%REPORT_FOLDER%" (
+echo Cleaning old report folder: %REPORT_FOLDER%
+ rmdir /s /q "%REPORT_FOLDER%" 
+) 
 
 REM ==============================
 REM Run JMeter
 REM ==============================
-"%JMETER_HOME%\bin\jmeter.bat" ^
-    -n -t "%TEST_PLAN%" ^
-    -l "%RESULT_FILE%" ^
-    -e -o "%REPORT_FOLDER%"
+echo Running JMeter Test Plan...
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULT_FILE%" -e -o "%REPORT_FOLDER%" -q "%JMETER_HOME%\bin\user.properties" ^
+-JCLEAR_CSV_CACHE=true
 
 if errorlevel 1 (
     echo JMeter execution failed!
@@ -58,5 +58,3 @@ echo -------------------------------------
 echo Test completed successfully!
 echo HTML report: %REPORTS_DIR%\latest\index.html
 echo -------------------------------------
-
-endlocal
