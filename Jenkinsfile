@@ -6,8 +6,7 @@ pipeline {
         TEST_PLAN = "${WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${WORKSPACE}\\results"
         REPORTS_DIR = "${WORKSPACE}\\reports"
-        BUILD_NUMBER = "${env.BUILD_NUMBER}"
-        reportDir = ""
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"        
     }
 
     stages {
@@ -45,10 +44,12 @@ pipeline {
             }
         }
 
-                  stage('Copy Latest Report') {
+       stage('Copy Report to Latest') {
             steps {
                 bat '''
-                    echo Copying build-%BUILD_NUMBER% report into "latest"
+                    echo Creating/Updating latest report folder...
+                    if exist "%REPORTS_DIR%\\latest" rmdir /s /q "%REPORTS_DIR%\\latest"
+                    mkdir "%REPORTS_DIR%\\latest"
                     xcopy /e /i /y "%REPORTS_DIR%\\build-%BUILD_NUMBER%" "%REPORTS_DIR%\\latest"
                 '''
             }
@@ -57,8 +58,7 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    //reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",                    
-                   reportDir: "${env.REPORTS_DIR}\\latest",
+                    reportDir: "${env.REPORTS_DIR}\\latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -66,7 +66,7 @@ pipeline {
                     allowMissing: false
                     
                 ])
-                echo "Reports dir: %reportDir%"
+                echo "Reports dir: ${env.REPORTS_DIR}\\latest"
             }
         }
 
@@ -89,12 +89,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
-
-
-
-
