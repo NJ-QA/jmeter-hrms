@@ -20,7 +20,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up ">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up">
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
           <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -965,15 +965,18 @@ if (clearCache) {
         <stringProp name="parameters"></stringProp>
         <stringProp name="filename"></stringProp>
         <stringProp name="cacheKey">true</stringProp>
-        <stringProp name="script">import org.apache.jmeter.util.JMeterUtils
-import org.apache.jmeter.services.FileServer
+        <stringProp name="script">import org.apache.jmeter.services.FileServer
+import org.apache.jmeter.util.JMeterUtils
 import org.apache.commons.io.FileUtils
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-// Always reload in CLI runs (to avoid stale data in Jenkins)
-def isNonGui = &quot;true&quot;.equalsIgnoreCase(JMeterUtils.getProp(&quot;jmeterengine.nongui&quot;))
+// Check if we’re running in non-GUI mode (command line, Jenkins, etc.)
+def isNonGui = Boolean.parseBoolean(JMeterUtils.getProperty(&quot;jmeterengine.nongui&quot;) ?: &quot;false&quot;)
+log.debug(&quot;ℹ️ Running in Non-GUI mode? ${isNonGui}&quot;)
+
+//def isNonGui = &quot;true&quot;.equalsIgnoreCase(JMeterUtils.getProp(&quot;jmeterengine.nongui&quot;))
 if (props.get(&quot;__universalCsvLoaderInit&quot;) == null || isNonGui) {
     def csvRegistry = new ConcurrentHashMap&lt;String, Map&gt;()
 
