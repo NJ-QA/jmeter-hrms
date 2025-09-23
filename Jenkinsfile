@@ -2,65 +2,37 @@ pipeline {
     agent any
 
     environment {
- JMETER_VERSION = '5.6.3'
-        JMETER_HOME = "${env.WORKSPACE}\\apache-jmeter-${JMETER_VERSION}"
-        TEST_PLAN   = "${env.WORKSPACE}\\HRMS_MB.jmx"
-        RESULTS_DIR = "${env.WORKSPACE}\\results"
-        REPORTS_DIR = "${env.WORKSPACE}\\reports"
-
+        JMETER_HOME = "C:\\apache-jmeter-5.6.3"
+        TEST_PLAN = "${WORKSPACE}\\HRMS_MB.jmx"
+        RESULTS_DIR = "${WORKSPACE}\\results"
+        REPORTS_DIR = "${WORKSPACE}\\reports"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
     }
 
     stages {
-         stage('Debug Paths') {
+        stage('Debug Paths') {
             steps {
+                echo "JMeter Home: ${env.JMETER_HOME}"
                 echo "WORKSPACE path: ${env.WORKSPACE}"
                 echo "Test plan path: ${env.TEST_PLAN}"
-                echo "Results dir:   ${env.RESULTS_DIR}"
-                echo "Reports dir:   ${env.REPORTS_DIR}"
-            }
-        }
-        
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/NJ-QA/jmeter-hrms.git'
+                echo "Results dir: ${env.RESULTS_DIR}"
+                echo "Reports dir: ${env.REPORTS_DIR}"
             }
         }
 
-        stage('Setup JMeter') {
+        stage('Run JMeter Test + Generate Report') {
             steps {
-                bat """
-                if not exist "%JMETER_HOME%" (
-                    echo Downloading Apache JMeter...
-                    powershell -command "Invoke-WebRequest -Uri https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-%JMETER_VERSION%.zip -OutFile jmeter.zip"
-                    powershell -command "Expand-Archive -Path jmeter.zip -DestinationPath %WORKSPACE% -Force"
-               ) else (
-                echo Using cached JMeter at %JMETER_HOME%
-                )
-                """
-            }
-        }
-        
-       stage('Run JMeter Test') {
-            steps {
-                bat """
-                    echo Cleaning old results...
-                    if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
-                    if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
-                    mkdir "%RESULTS_DIR%"
-                    mkdir "%REPORTS_DIR%"
-
-                    echo Running JMeter test plan: %TEST_PLAN%
-                    "%JMETER_HOME%\\bin\\jmeter.bat" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\\results.csv" -e -o "%REPORTS_DIR%\\latest"
-                """
+                echo "Running JMeter Test Plan..."
+                bat '"%WORKSPACE%\\runTest.bat"'
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: '${env.REPORTS_DIR}\\latest',
-                    reportFiles: 'index.html',
-                    reportName: "JMeterTestReport-${env.BUILD_NUMBER}",
+                    reportDir: "${env.REPORTS_DIR}/latest",
+                    reportFiles: "index.html",
+                    reportName: "JMeter-HTML-Report",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: false
@@ -68,23 +40,25 @@ pipeline {
             }
         }
 
-        stage('Archive Results + Test Data') {
+        stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, csvs/**, images/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**, reports/latest/**', fingerprint: true
             }
         }
     }
 
     post {
         always {
-            echo "Cleaning workspace..."
-            deleteDir()
+            echo "Pipeline finished. Check console and HTML report."
         }
         failure {
-            echo "❌ JMeter test failed! Check console output for details."
+            echo "❌ JMeter test failed!"
         }
         success {
-            echo "✅ JMeter test completed successfully!"
+            echo "✅ JMeter test & report generated successfully!"
         }
     }
-	
+}
+
+
+

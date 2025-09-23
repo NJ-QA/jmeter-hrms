@@ -20,7 +20,11 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
+<<<<<<< HEAD
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up ">
+=======
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="User Sign Up" enabled="true">
+>>>>>>> 05ef4c50ebe60da88707791052e34467dbe56dad
           <stringProp name="TestPlan.comments">Sign up CSV//users.csv</stringProp>
           <stringProp name="HTTPSampler.domain">hrms.modulobytes.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>

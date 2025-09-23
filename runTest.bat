@@ -1,41 +1,51 @@
 @echo off
 REM ===============================
-REM Jenkins-Friendly JMeter Run Script
+REM Jenkins-ready JMeter Run Script
 REM ===============================
 
-REM Set JMeter Home and Test Plan
-set JMETER_HOME=C:\apache-jmeter-5.6.3
-set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
-echo Workspace path : %WORKSPACE%
-echo Test plan path: %TEST_PLAN%
+REM ------------------------------
+REM Environment variables (override from Jenkins if needed)
+REM ------------------------------
+if "%JMETER_HOME%"=="" set JMETER_HOME=C:\apache-jmeter-5.6.3
+if "%TEST_PLAN%"=="" set TEST_PLAN=%WORKSPACE%\HRMS_MB.jmx
+if "%RESULTS_DIR%"=="" set RESULTS_DIR=%WORKSPACE%\results
+if "%REPORTS_DIR%"=="" set REPORTS_DIR=%WORKSPACE%\reports
+if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=local
 
-REM Results and Reports Directories
-set RESULTS_DIR=%WORKSPACE%\results
-set REPORTS_DIR=%WORKSPACE%\reports
-echo RESULTS_DIR path : %RESULTS_DIR%
-echo REPORTS_DIR path : %REPORTS_DIR%
+set REPORT_FOLDER=%REPORTS_DIR%\build-%BUILD_NUMBER%
+set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%.csv
 
-REM Generate timestamp (YYYYMMDD_HHMMSS)
-for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set ldt=%%I
-set TS=%ldt:~0,8%_%ldt:~8,6%
+REM ------------------------------
+REM Ensure results and reports directories exist
+REM ------------------------------
+if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
+if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"
 
-REM Clean old results/reports
-if exist "%RESULTS_DIR%" rmdir /s /q "%RESULTS_DIR%"
-if exist "%REPORTS_DIR%" rmdir /s /q "%REPORTS_DIR%"
+REM ------------------------------
+REM Clean previous report folder for this build
+REM ------------------------------
+if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
+if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
-REM Recreate directories
-mkdir "%RESULTS_DIR%"
-mkdir "%REPORTS_DIR%"
+REM ------------------------------
+REM Run JMeter CLI with HTML report
+REM ------------------------------
+echo Running JMeter test plan: %TEST_PLAN%
+"%JMETER_HOME%\bin\jmeter.bat" -n -t "%TEST_PLAN%" ^
+    -l "%RESULT_FILE%" ^
+    -e -o "%REPORT_FOLDER%" ^
+    -q "%JMETER_HOME%\bin\user.properties"
 
-REM Run JMeter in non-GUI mode with user.properties
-echo Running JMeter test plan...
-"%JMETER_HOME%\bin\jmeter.bat" -p "%JMETER_HOME%\bin\user.properties" -n -t "%TEST_PLAN%" -l "%RESULTS_DIR%\results-%TS%.csv" -e -o "%REPORTS_DIR%\latest"
-
-REM Check if JMeter run succeeded
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: JMeter test failed!
     exit /b %ERRORLEVEL%
 )
 
+REM ------------------------------
+REM Refresh "latest" folder for Jenkins HTML publisher
+REM ------------------------------
+if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
+xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\latest"
+
 echo Test completed successfully!
-echo Report available at: %REPORTS_DIR%\latest\index.html
+echo HTML report is here: %REPORTS_DIR%\latest\index.html
