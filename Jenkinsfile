@@ -20,24 +20,7 @@ pipeline {
             }
         }
 
-        stage('Clear CSV Cache'){
-            steps{
-                 echo "Clearing Universal CSV Loader cache..."
-                script{
-                    // Ensure latest CSV is used
-                    def groovyScript = """
-                        props.remove('universalCsvLoader')
-                        props.remove('__universalCsvLoaderInit')
-                        log.info('✅ Cleared Universal CSV Loader cache')
-                    """
-                    writeFile file: "${WORKSPACE}\\clearCsvCache.groovy", text: groovyScript
-                    bat "\"${JMETER_HOME}\\bin\\jmeter.bat\" -n -t \"${TEST_PLAN}\" -JclearCsv=true -q \"${JMETER_HOME}\\bin\\user.properties\""
-                }
-            }
-            
-        }
-
-        stage('Run JMeter Test + Generate Report') {
+       stage('Run JMeter Test + Generate Report') {
             steps {
                 echo "Running JMeter Test Plan..."
                 bat '"%WORKSPACE%\\runTest.bat"'
@@ -76,7 +59,3 @@ pipeline {
         }
     }
 }
-
-
-
-
