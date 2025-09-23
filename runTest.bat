@@ -29,21 +29,6 @@ if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
-REM Find the latest CSV (if any) and use it
-REM ------------------------------
-set "LATEST_CSV="
-for /f "delims=" %%i in ('dir /b /o-d "%RESULTS_DIR%\*.csv"') do (
-    set "LATEST_CSV=%%i"
-    goto :found_csv
-)
-:found_csv
-if defined LATEST_CSV (
-    echo Using latest CSV: %LATEST_CSV%
-) else (
-    echo No existing CSV found, JMeter will create a new one
-)
-
-REM ------------------------------
 REM Run JMeter CLI with HTML report
 REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
@@ -59,6 +44,21 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM ------------------------------
+REM Find the latest CSV (if any) and use it
+REM ------------------------------
+set "LATEST_CSV="
+for /f "delims=" %%i in ('dir /b /o-d "%RESULTS_DIR%\*.csv"') do (
+    set "LATEST_CSV=%%i"
+    goto :found_csv
+)
+:found_csv
+if defined LATEST_CSV (
+    echo Using latest CSV: %LATEST_CSV%
+) else (
+    echo No existing CSV found, JMeter will create a new one
+)
+
+REM ------------------------------
 REM Verify report generation
 REM ------------------------------
 echo ✅ Verify JMeter report generation
@@ -69,6 +69,7 @@ if not exist "%REPORT_FOLDER%\index.html" (
     echo ERROR: HTML report was not generated!
     exit /b 1
 )
+
 
 REM ------------------------------
 REM Refresh "latest" folder for Jenkins HTML publisher
