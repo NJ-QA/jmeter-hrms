@@ -29,12 +29,6 @@ if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
-REM Debug: list CSV files
-REM ------------------------------
-echo Using CSV folder: %WORKSPACE%\csvs
-dir /b "%WORKSPACE%\csvs"
-
-REM ------------------------------
 REM Run JMeter CLI with HTML report
 REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
@@ -50,12 +44,10 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM ------------------------------
-REM Refresh "latest" folder for Jenkins HTML publisher
+REM Verify report generation
 REM ------------------------------
-if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
-echo REPORT_FOLDER=%REPORT_FOLDER%
-echo REPORTS_DIR=%REPORTS_DIR%
-xcopy /e /i /y "%REPORT_FOLDER%*" "%REPORTS_DIR%\latest"
+echo JMeter CSV: %RESULT_FILE%
+echo JMeter HTML Report: %REPORT_FOLDER%\index.html
+dir "%REPORT_FOLDER%"
 
 echo Test completed successfully!
-echo HTML report is here: %REPORTS_DIR%\latest\index.html
