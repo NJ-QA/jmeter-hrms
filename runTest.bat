@@ -53,10 +53,9 @@ REM ------------------------------
 REM Refresh "latest" folder for Jenkins HTML publisher
 REM ------------------------------
 if exist "%REPORTS_DIR%\latest" rmdir /s /q "%REPORTS_DIR%\latest"
-mkdir "%REPORTS_DIR%\latest"
-
-xcopy /e /i /y "%REPORT_FOLDER%\*" "%REPORTS_DIR%\latest\"
-copy /y "%RESULT_FILE%" "%REPORTS_DIR%\latest\"
+echo REPORT_FOLDER=%REPORT_FOLDER%
+echo REPORTS_DIR=%REPORTS_DIR%
+xcopy /e /i /y "%REPORT_FOLDER%*" "%REPORTS_DIR%\latest"
 
 echo Test completed successfully!
 echo HTML report is here: %REPORTS_DIR%\latest\index.html
