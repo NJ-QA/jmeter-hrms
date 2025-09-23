@@ -7,6 +7,7 @@ pipeline {
         RESULTS_DIR = "${WORKSPACE}\\results"
         REPORTS_DIR = "${WORKSPACE}\\reports"
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        reportDir = ""
     }
 
     stages {
@@ -48,8 +49,7 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
-                    echo "Reports dir: %reportDir%"
+                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",                    
                    //reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
@@ -58,6 +58,7 @@ pipeline {
                     allowMissing: false
                     
                 ])
+                echo "Reports dir: %reportDir%"
             }
         }
 
@@ -80,6 +81,7 @@ pipeline {
         }
     }
 }
+
 
 
 
