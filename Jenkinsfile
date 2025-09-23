@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Run JMeter Test + Generate Report') {
+       stage('Run JMeter Test + Generate Report') {
             steps {
                 echo "Running JMeter Test Plan..."
                 bat '"%WORKSPACE%\\runTest.bat"'
@@ -30,7 +30,7 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}/latest",
+                    reportDir: "${env.REPORTS_DIR}\\latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -59,6 +59,3 @@ pipeline {
         }
     }
 }
-
-
-
