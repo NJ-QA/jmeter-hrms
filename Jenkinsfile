@@ -39,15 +39,17 @@ pipeline {
                     :done
                 """
                  echo "Listing HTML report folder:"
-                bat 'dir "%REPORTS_DIR%\\build-${env.BUILD_NUMBER}"'            
+                bat """
+                dir "%REPORTS_DIR%\\build-${BUILD_NUMBER}"   
+                 """
             }
         }
 
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
-                   // reportDir: "${env.REPORTS_DIR}/latest",
+                    reportDir: "${env.REPORTS_DIR}\\build-${BUILD_NUMBER}",
+                   //reportDir: "${env.REPORTS_DIR}/latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -76,5 +78,6 @@ pipeline {
         }
     }
 }
+
 
 
