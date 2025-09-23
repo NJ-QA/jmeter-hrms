@@ -59,7 +59,7 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.WORKSPACE}/reports/latest",
+                    reportDir: "${env.REPORTS_DIR}\\latest",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -91,6 +91,7 @@ pipeline {
         }
     }
 }
+
 
 
 
