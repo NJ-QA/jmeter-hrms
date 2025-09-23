@@ -17,6 +17,7 @@ pipeline {
                 echo "Test plan path: ${env.TEST_PLAN}"
                 echo "Results dir: ${env.RESULTS_DIR}"
                 echo "Reports dir: ${env.REPORTS_DIR}"
+                echo "Build Number: ${env.BUILD_NUMBER}"
             }
         }
 
@@ -27,10 +28,17 @@ pipeline {
             }
         }
 
+         stage('Debug Reports Folder') {
+            steps {
+               bat "dir \"${env.REPORTS_DIR}\""
+        bat "dir \"${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}\""
+            }
+        }
+
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\latest",
+                    reportDir: "${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}",
                     reportFiles: "index.html",
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
@@ -42,7 +50,7 @@ pipeline {
 
         stage('Archive Results & Reports') {
             steps {
-                archiveArtifacts artifacts: 'results/**, reports/build-*/**, reports/latest/**', fingerprint: true
+                archiveArtifacts artifacts: 'results/**, reports/build-*/**', fingerprint: true
             }
         }
     }
@@ -59,3 +67,10 @@ pipeline {
         }
     }
 }
+
+
+
+
+
+
+
