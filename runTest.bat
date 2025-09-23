@@ -29,6 +29,23 @@ if exist "%REPORT_FOLDER%" rmdir /s /q "%REPORT_FOLDER%"
 if exist "%RESULT_FILE%" del "%RESULT_FILE%"
 
 REM ------------------------------
+REM Find the latest CSV (if any) and use it
+REM ------------------------------
+set "LATEST_CSV="
+for /f "delims=" %%i in ('dir /b /a-d /o-d "%RESULTS_DIR%\*.csv" 2^>nul') do (
+    set "latestCsv=%%i"
+    goto :found_csv
+)
+:found
+if defined latestCsv (
+    set RESULT_FILE=%RESULTS_DIR%\%latestCsv%
+    echo Latest CSV file: %RESULT_FILE%
+) else (
+    echo No CSV file found in %RESULTS_DIR%
+    set RESULT_FILE=%RESULTS_DIR%\results-%BUILD_NUMBER%.csv
+)
+
+REM ------------------------------
 REM Run JMeter CLI with HTML report
 REM ------------------------------
 echo Running JMeter test plan: %TEST_PLAN%
@@ -41,21 +58,6 @@ echo Running JMeter test plan: %TEST_PLAN%
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: JMeter test failed!
     exit /b %ERRORLEVEL%
-)
-
-REM ------------------------------
-REM Find the latest CSV (if any) and use it
-REM ------------------------------
-set "LATEST_CSV="
-for /f "delims=" %%i in ('dir /b /o-d "%RESULTS_DIR%\*.csv"') do (
-    set "LATEST_CSV=%%i"
-    goto :found_csv
-)
-:found_csv
-if defined LATEST_CSV (
-    echo Using latest CSV: %LATEST_CSV%
-) else (
-    echo No existing CSV found, JMeter will create a new one
 )
 
 REM ------------------------------
