@@ -54,7 +54,8 @@ pipeline {
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
-                    allowMissing: false
+                    allowMissing: false,
+                    echo "Reports dir: ${reportDir}"
                 ])
             }
         }
@@ -78,6 +79,7 @@ pipeline {
         }
     }
 }
+
 
 
 
