@@ -28,10 +28,10 @@ pipeline {
             }
         }
 
-         stage('Debug Reports Folder') {
+         stage('Verify Reports Folder') {
             steps {
-               bat "dir \"${env.REPORTS_DIR}\""
-        bat "dir \"${env.REPORTS_DIR}\\build-${env.BUILD_NUMBER}\""
+                 echo "Checking report folder..."
+             bat 'dir "%REPORTS_DIR%\\build-%BUILD_NUMBER%"'
             }
         }
 
@@ -67,6 +67,7 @@ pipeline {
         }
     }
 }
+
 
 
 
