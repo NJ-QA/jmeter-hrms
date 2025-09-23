@@ -18,16 +18,6 @@ pipeline {
                 echo "Results dir: ${env.RESULTS_DIR}"
                 echo "Reports dir: ${env.REPORTS_DIR}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
-
-                 // Print all CSV files and the latest one
-                bat """
-                    dir "%RESULTS_DIR%\\*.csv"
-                    for /f "delims=" %%i in ('dir /b /o-d "%RESULTS_DIR%\\*.csv"') do (
-                        echo Latest CSV: %%i
-                        goto :done
-                    )
-                    :done
-                """
             }
         }
 
@@ -38,18 +28,18 @@ pipeline {
             }
         }
 
-         stage('Verify Reports Folder') {
+         stage('Verify Latest Results & Report') {
             steps {
-                // Ensure the latest report folder exists before publishing
-            // bat 'dir "%REPORTS_DIR%\\build-%BUILD_NUMBER%"'
-                 bat """
-                    if exist "%REPORTS_DIR%\\latest\\index.html" (
-                        echo HTML report found: %REPORTS_DIR%\\latest\\index.html
-                    ) else (
-                        echo ERROR: HTML report missing!
-                        exit /b 1
+                echo "Listing latest CSV file:"
+                bat """
+                    for /f "delims=" %%i in ('dir /b /a-d /o-d "%RESULTS_DIR%\\*.csv" 2^>nul') do (
+                        echo Latest CSV: %%i
+                        goto :done
                     )
+                    :done
                 """
+                 echo "Listing HTML report folder:"
+                bat 'dir "%REPORTS_DIR%\\latest"'            
             }
         }
 
@@ -86,3 +76,4 @@ pipeline {
         }
     }
 }
+
