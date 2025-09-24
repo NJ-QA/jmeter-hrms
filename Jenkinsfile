@@ -45,7 +45,7 @@ pipeline {
                     echo Copying build report to latest...
                     set REPORT_FOLDER=%REPORTS_DIR%\\build-%BUILD_NUMBER%
                     mkdir "%REPORTS_DIR%\\latest"
-                    xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\\latest"
+                    xcopy /E /I /Y "%REPORT_FOLDER%\\*" "%REPORTS_DIR%\\latest\\"
                     echo Latest report contents:
                     dir "%REPORTS_DIR%\\latest"
                 '''
@@ -59,11 +59,13 @@ pipeline {
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
                     reportDir: "${env.REPORTS_DIR}\\latest",  // folder containing index.html + subfolders
-                    reportFiles: 'index.html',
-                    reportName: 'JMeter-HTML-Report',                  
-                    includes: '**/*'   // 👈 <- important! includes all subfolders and resources
+                    reportFiles: "index.html",
+                    reportName: "JMeter-HTML-Report",                  
+                    includes: "**/*"   // 👈 <- important! includes all subfolders and resources
                 ])
+                echo "Reports dir: ${env.REPORTS_DIR}\\latest"
                 echo "Report published at: ${env.WORKSPACE}\\reports\\latest\\index.html"
+                echo "Full HTML report path: ${env.REPORTS_DIR}\\latest\\index.html"
             }
         }
 
@@ -86,5 +88,3 @@ pipeline {
         }
     }
 }
-
-
