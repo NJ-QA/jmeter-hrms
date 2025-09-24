@@ -55,13 +55,13 @@ pipeline {
         stage('Publish JMeter HTML Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: "${env.REPORTS_DIR}\\latest",
-                    reportFiles: "index.html",
-                    reportName: "JMeter-HTML-Report",
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true,
                     allowMissing: false,
-                    includes: "**/*"   // 👈 add this line to include js/css/images
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: "${env.REPORTS_DIR}\\latest",  // folder containing index.html + subfolders
+                    reportFiles: 'index.html',
+                    reportName: 'JMeter-HTML-Report',                  
+                    includes: '**/*'   // 👈 <- important! includes all subfolders and resources
                 ])
                 echo "Report published at: ${env.WORKSPACE}\\reports\\latest\\index.html"
             }
@@ -86,4 +86,5 @@ pipeline {
         }
     }
 }
+
 
