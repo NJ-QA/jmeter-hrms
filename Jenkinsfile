@@ -3,56 +3,52 @@ pipeline {
 
     environment {
         JMETER_HOME = "C:\\apache-jmeter-5.6.3"
-        TEST_PLAN = "${WORKSPACE}\\HRMS_MB.jmx"
+        TEST_PLAN   = "${WORKSPACE}\\HRMS_MB.jmx"
         RESULTS_DIR = "${WORKSPACE}\\results"
         REPORTS_DIR = "${WORKSPACE}\\reports"
-        BUILD_NUMBER = "${env.BUILD_NUMBER}"        
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Debug Paths & Latest CSV') {
+        stage('Debug Paths') {
             steps {
                 echo "JMeter Home: ${env.JMETER_HOME}"
-                echo "WORKSPACE path: ${env.WORKSPACE}"
-                echo "Test plan path: ${env.TEST_PLAN}"
-                echo "Results dir: ${env.RESULTS_DIR}"
-                echo "Reports dir: ${env.REPORTS_DIR}"
-                echo "Build Number: ${env.BUILD_NUMBER}"
+                echo "Workspace : ${env.WORKSPACE}"
+                echo "Test plan : ${env.TEST_PLAN}"
+                echo "Results   : ${env.RESULTS_DIR}"
+                echo "Reports   : ${env.REPORTS_DIR}"
+                echo "Build No  : ${env.BUILD_NUMBER}"
             }
         }
 
-       
-        stage('Clean Reports') {
+        stage('Clean Old Reports') {
             steps {
                 bat '''
-                    if exist "%REPORTS_DIR%\\build-%BUILD_NUMBER%" (
-                        echo Cleaning old report folder: %REPORTS_DIR%\\build-%BUILD_NUMBER%
-                        rmdir /s /q "%REPORTS_DIR%\\build-%BUILD_NUMBER%"
-                    )
                     if exist "%REPORTS_DIR%\\latest" (
-                        echo Cleaning old latest report folder
-                        rmdir /s /q "%REPORTS_DIR%\\latest%"
+                        echo Removing old 'latest' folder
+                        rmdir /s /q "%REPORTS_DIR%\\latest"
                     )
                 '''
             }
         }
-        
-       stage('Run JMeter Test + Generate Report') {
+
+        stage('Run JMeter Test') {
             steps {
-                echo "Running JMeter Test Plan..."
+                echo "Running JMeter test plan..."
                 bat '"%WORKSPACE%\\runTest.bat"'
             }
         }
 
-       stage('Copy Report to Latest') {
+        stage('Copy Report to Latest') {
             steps {
                 bat '''
-                    echo Creating/Updating latest report folder...
-                    if exist "%REPORTS_DIR%\\latest" rmdir /s /q "%REPORTS_DIR%\\latest"
+                    echo Copying build report to latest...
+                    set REPORT_FOLDER=%REPORTS_DIR%\\build-%BUILD_NUMBER%
                     mkdir "%REPORTS_DIR%\\latest"
-                    xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\\latest"                   
+                    xcopy /e /i /y "%REPORT_FOLDER%" "%REPORTS_DIR%\\latest"
+                    echo Latest report contents:
+                    dir "%REPORTS_DIR%\\latest"
                 '''
-                bat 'dir "${env.REPORTS_DIR}\\latest"'
             }
         }
 
@@ -65,10 +61,8 @@ pipeline {
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: false
-                    
                 ])
-                echo "Reports dir: ${env.WORKSPACE}\\reports\\latest"
-                echo "Full HTML report path: ${env.WORKSPACE}\\reports\\latest\\index.html"
+                echo "Report published at: ${env.WORKSPACE}\\reports\\latest\\index.html"
             }
         }
 
@@ -81,7 +75,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finished. Check console and HTML report."
+            echo "Pipeline finished."
         }
         failure {
             echo "❌ JMeter test failed!"
@@ -91,9 +85,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
-
