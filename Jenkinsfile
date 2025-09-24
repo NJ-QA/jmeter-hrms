@@ -60,7 +60,8 @@ pipeline {
                     reportName: "JMeter-HTML-Report",
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
-                    allowMissing: false
+                    allowMissing: false,
+                    includes: "**/*"   // 👈 add this line to include js/css/images
                 ])
                 echo "Report published at: ${env.WORKSPACE}\\reports\\latest\\index.html"
             }
@@ -85,3 +86,4 @@ pipeline {
         }
     }
 }
+
